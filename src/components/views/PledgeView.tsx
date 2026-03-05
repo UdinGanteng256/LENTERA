@@ -76,12 +76,12 @@ Uang Anda akan dijaga secara Amanah. Jika target "${target}" tercapai, uang akan
 
       <style jsx>{`
         .pledge-container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; }
-        .pledge-header { padding: 30px; text-align: center; border-color: rgba(212, 175, 55, 0.3); }
+        .pledge-header { padding: 30px; text-align: center; border-color: var(--glass-border); background: var(--panel-bg); }
         .setup-pledge, .active-pledge { padding: 40px; display: flex; flex-direction: column; gap: 25px; }
         .form-group { display: flex; flex-direction: column; gap: 10px; }
         .form-group label { font-weight: 600; font-size: 14px; color: var(--secondary-text); }
         .form-group select { 
-          background: rgba(255,255,255,0.05); border: 1px solid var(--divider); 
+          background: var(--panel-bg); border: 1px solid var(--glass-border); 
           color: white; padding: 12px; border-radius: 10px; outline: none;
         }
         .slider-box { display: flex; align-items: center; gap: 20px; }
@@ -93,7 +93,7 @@ Uang Anda akan dijaga secara Amanah. Jika target "${target}" tercapai, uang akan
         .active-pledge { align-items: center; text-align: center; border-color: var(--primary); }
         .status-badge { background: var(--primary); color: var(--on-primary); padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; }
         .progress-circle { 
-          width: 150px; height: 150px; border: 8px solid rgba(212, 175, 55, 0.1); 
+          width: 150px; height: 150px; border: 8px solid var(--glass-border); 
           border-top-color: var(--primary); border-radius: 50%; 
           display: flex; flex-direction: column; align-items: center; justify-content: center;
           margin: 20px 0;

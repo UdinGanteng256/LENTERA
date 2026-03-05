@@ -266,9 +266,9 @@ export default function DashboardPage() {
           position: 'fixed', top: 0, left: 0, width: '100%',
           padding: '20px 40px', display: 'flex', justifyContent: 'space-between',
           alignItems: 'center', zIndex: 1000,
-          background: 'linear-gradient(to bottom, rgba(5,5,10,0.98) 0%, rgba(5,5,10,0.85) 100%)',
+          background: 'var(--panel-bg)',
           backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          borderBottom: '1px solid var(--glass-border)',
           boxShadow: '0 4px 30px rgba(0,0,0,0.3)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => window.location.href = '/'}>
@@ -296,12 +296,12 @@ export default function DashboardPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  background: 'rgba(212, 175, 55, 0.1)',
-                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  background: 'var(--panel-bg)',
+                  border: '1px solid var(--glass-border)',
                   borderRadius: '12px',
                   padding: '10px 14px',
                   cursor: 'pointer',
-                  color: '#D4AF37',
+                  color: 'var(--primary)',
                   fontSize: '18px',
                 }}
               >
@@ -370,9 +370,9 @@ export default function DashboardPage() {
                 left: '50%',
                 transform: 'translateX(-50%)',
                 zIndex: 999,
-                background: 'rgba(5,5,10,0.98)',
+                background: 'var(--panel-bg)',
                 backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
+                border: '1px solid var(--glass-border)',
                 borderRadius: '16px',
                 padding: '16px',
                 boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
@@ -395,10 +395,10 @@ export default function DashboardPage() {
                     style={{
                       width: '100%',
                       padding: '16px 18px',
-                      background: isActive ? 'rgba(212, 175, 55, 0.15)' : 'transparent',
+                      background: isActive ? 'var(--primary)' : 'transparent',
                       border: 'none',
                       borderRadius: '10px',
-                      color: isActive ? '#D4AF37' : 'var(--secondary-text)',
+                      color: isActive ? '#0F0F1B' : 'var(--secondary-text)',
                       fontSize: '14px',
                       fontWeight: isActive ? 700 : 500,
                       textAlign: 'left',
@@ -440,7 +440,7 @@ export default function DashboardPage() {
               className="btn-primary"
               onClick={() => setIsChatOpen(true)}
               aria-label="Open AI chat assistant"
-              style={{ boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)' }}
+              style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.2)' }}
             >
               <span aria-hidden="true">✦</span> Tanya AI
             </button>
@@ -489,7 +489,7 @@ export default function DashboardPage() {
             height: 40px;
             border-radius: 8px;
             margin-bottom: 30px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+            background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
           }
@@ -501,7 +501,7 @@ export default function DashboardPage() {
           .skeleton-line {
             height: 60px;
             border-radius: 12px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+            background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
           }

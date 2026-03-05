@@ -59,9 +59,9 @@ const PrayerTimes = () => {
           max-width: 1100px;
         }
         .prayer-card {
-          background: rgba(26, 26, 46, 0.4);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          background: var(--panel-bg);
+          backdrop-filter: blur(var(--glass-blur));
+          border: 1px solid var(--glass-border);
           border-radius: var(--radius-xl);
           padding: 24px 16px;
           display: flex;
@@ -73,8 +73,8 @@ const PrayerTimes = () => {
         }
         .prayer-card.active {
           border-color: var(--primary);
-          background: rgba(212, 175, 55, 0.1);
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+          background: var(--panel-bg);
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
           transform: translateY(-5px);
         }
         .icon { font-size: 28px; margin-bottom: 4px; }

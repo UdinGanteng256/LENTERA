@@ -26,11 +26,11 @@ const SunCycle = () => {
 
     if (!isVisible) return { x: -100, y: 500, type: 'none' };
 
-    const progress = (totalMinutes - start) / (end - start);
-
-    // Smooth Arc Movement
-    const x = 50 + progress * 900;
-    const y = 400 - (4 * 350 * progress * (1 - progress)); 
+    // Quadratic Bezier Formula: B(t) = (1-t)²P₀ + 2(1-t)tP₁ + t²P₂
+    // P₀=(50, 400), P₁=(500, 50), P₂=(950, 400) - Matches the path's "M 50 400 Q 500 50 950 400"
+    const t = progress;
+    const x = (1 - t) ** 2 * 50 + 2 * (1 - t) * t * 500 + t ** 2 * 950;
+    const y = (1 - t) ** 2 * 400 + 2 * (1 - t) * t * 50 + t ** 2 * 400;
 
     return { x, y, type: isDay ? 'sun' : 'moon' };
   };
@@ -44,7 +44,7 @@ const SunCycle = () => {
         <svg width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
           <path
             d="M 50 400 Q 500 50 950 400"
-            stroke="rgba(212, 175, 55, 0.05)"
+            stroke="var(--glass-border)"
             strokeWidth="1"
             fill="none"
           />

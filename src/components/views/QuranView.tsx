@@ -80,8 +80,8 @@ const QuranView = () => {
           style={{
             width: '100%',
             maxWidth: '400px',
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid var(--divider)',
+            background: 'var(--panel-bg)',
+            border: '1px solid var(--glass-border)',
             padding: '12px 20px',
             borderRadius: '12px',
             color: 'white',
@@ -122,8 +122,8 @@ const QuranView = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '16px',
-              border: isSelected ? '1px solid var(--primary)' : '1px solid rgba(255,255,255,0.05)',
-              background: isSelected ? 'rgba(212,175,55,0.12)' : 'rgba(255,255,255,0.03)',
+              border: isSelected ? '1px solid var(--primary)' : '1px solid var(--glass-border)',
+              background: isSelected ? 'var(--panel-bg)' : 'var(--glass-bg)',
               transition: 'all 0.2s ease',
               willChange: 'transform, border-color, background'
             }}>
@@ -131,7 +131,7 @@ const QuranView = () => {
                 width: '44px',
                 height: '44px',
                 minWidth: '44px',
-                background: isSelected ? 'var(--primary)' : 'rgba(212,175,55,0.15)',
+                background: isSelected ? 'var(--primary)' : 'var(--panel-bg)',
                 color: isSelected ? '#0F0F1B' : 'var(--primary)',
                 display: 'flex',
                 alignItems: 'center',
@@ -177,17 +177,18 @@ const QuranView = () => {
       <style jsx>{`
         .search-input {
           width: 100%; max-width: 400px;
-          background: rgba(255,255,255,0.05); border: 1px solid var(--divider);
+          background: var(--panel-bg); border: 1px solid var(--glass-border);
           padding: 12px 20px; border-radius: 12px; color: white; outline: none;
         }
         .surah-card {
           padding: 20px; display: flex; align-items: center; gap: 20px; height: 100%;
-          border: 1px solid rgba(255,255,255,0.05);
+          border: 1px solid var(--glass-border);
         }
-        .surah-card.selected { border-color: var(--primary); background: rgba(212, 175, 55, 0.1); }
+        .surah-card.selected { border-color: var(--primary); background: var(--panel-bg); }
         .surah-num {
-          width: 40px; height: 40px; background: rgba(212, 175, 55, 0.1); color: var(--primary);
+          width: 40px; height: 40px; background: var(--panel-bg); color: var(--primary);
           display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800;
+          border: 1px solid var(--glass-border);
         }
         .surah-info { flex: 1; }
         .surah-info h4 { font-size: 18px; margin-bottom: 4px; font-weight: 700; }

@@ -72,7 +72,7 @@ const QuickActions = ({ onTabChange }: any) => {
         .actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; }
         .action-card { display: flex; align-items: center; gap: 16px; padding: 16px; transition: all 0.3s ease; border: 1px solid transparent; border-radius: var(--radius-xl); }
         .action-card:hover,
-        .action-card:focus { transform: translateY(-5px); border-color: var(--primary); background: rgba(212, 175, 55, 0.05); outline: 3px solid var(--primary); outline-offset: 2px; }
+        .action-card:focus { transform: translateY(-5px); border-color: var(--primary); background: var(--panel-bg); outline: 3px solid var(--primary); outline-offset: 2px; }
         .action-card:active { transform: translateY(-2px); }
         .icon-box { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
       `}</style>

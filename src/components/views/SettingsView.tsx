@@ -78,16 +78,16 @@ const SettingsView = () => {
         .divider { height: 1px; background: var(--divider); width: 100%; }
         
         .toggle-btn {
-          width: 54px; height: 28px; background: #333; border-radius: 20px; position: relative; transition: 0.3s;
+          width: 54px; height: 28px; background: var(--panel-bg); border: 1px solid var(--glass-border); border-radius: 20px; position: relative; transition: 0.3s;
         }
         .toggle-btn::after {
-          content: ''; position: absolute; width: 22px; height: 22px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: 0.3s;
+          content: ''; position: absolute; width: 22px; height: 22px; background: white; border-radius: 50%; top: 2px; left: 3px; transition: 0.3s;
         }
-        .toggle-btn.active { background: var(--primary); }
+        .toggle-btn.active { background: var(--primary); border-color: var(--primary); }
         .toggle-btn.active::after { left: 29px; }
         
         .setting-select {
-          background: rgba(255,255,255,0.05); border: 1px solid var(--divider);
+          background: var(--panel-bg); border: 1px solid var(--glass-border);
           color: white; padding: 10px 20px; border-radius: 10px; outline: none; cursor: pointer;
         }
       `}</style>

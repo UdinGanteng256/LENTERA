@@ -23,8 +23,8 @@ const PillNav: React.FC<PillNavProps> = ({
   items,
   activeId,
   onTabChange,
-  baseColor = '#D4AF37',
-  pillColor = 'rgba(255,255,255,0.05)',
+  baseColor = 'var(--primary)',
+  pillColor = 'var(--glass-bg)',
   hoveredPillTextColor = '#0F0F1B',
   pillTextColor = '#FFFFFF',
   ease = 'power3.out'
@@ -172,11 +172,11 @@ const PillNav: React.FC<PillNavProps> = ({
 
       <style jsx>{`
         .pill-nav-wrapper {
-          background: rgba(0,0,0,0.3);
+          background: var(--panel-bg);
           padding: 6px;
           border-radius: 50px;
-          border: 1px solid rgba(255,255,255,0.05);
-          backdrop-filter: blur(12px);
+          border: 1px solid var(--glass-border);
+          backdrop-filter: blur(var(--glass-blur));
         }
         .pill-list {
           display: flex;
@@ -207,7 +207,7 @@ const PillNav: React.FC<PillNavProps> = ({
         .pill-item.active {
           background: var(--base);
           color: var(--hover-text);
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
         .label-stack {
           position: relative;

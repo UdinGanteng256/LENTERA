@@ -32,8 +32,8 @@ const DonationCup = ({ fillLevel }: { fillLevel: number }) => {
         {/* Outer Glass Rim */}
         <path 
           d="M 40 20 L 160 20 L 145 230 Q 140 240 130 240 L 70 240 Q 60 240 55 230 L 40 20 Z" 
-          fill="rgba(255,255,255,0.03)" 
-          stroke="rgba(255,255,255,0.15)" 
+          fill="var(--glass-bg)" 
+          stroke="var(--glass-border)" 
           strokeWidth="2" 
         />
 

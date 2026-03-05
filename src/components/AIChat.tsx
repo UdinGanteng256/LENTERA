@@ -249,7 +249,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
           left: 0;
           width: 100vw;
           height: 100vh;
-          background: rgba(15, 15, 27, 0.85);
+          background: rgba(0, 0, 0, 0.75);
           backdrop-filter: blur(8px);
           z-index: 10000;
           display: flex;
@@ -270,15 +270,15 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
           flex-direction: column;
           overflow: hidden;
           box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-          border: 1px solid rgba(212, 175, 55, 0.2);
+          border: 1px solid var(--glass-border);
         }
         .chat-header {
           padding: 20px;
-          border-bottom: 1px solid rgba(255,255,255,0.1);
+          border-bottom: 1px solid var(--divider);
           display: flex;
           justify-content: space-between;
           align-items: center;
-          background: rgba(212, 175, 55, 0.05);
+          background: var(--panel-bg);
         }
         .ai-status {
           width: 10px;
@@ -341,10 +341,10 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
           word-break: break-word;
         }
         .msg-bubble.ai {
-          background: rgba(212, 175, 55, 0.15);
+          background: var(--panel-bg);
           color: var(--primary-text);
           border-bottom-left-radius: 4px;
-          border: 1px solid rgba(212, 175, 55, 0.3);
+          border: 1px solid var(--glass-border);
         }
         .msg-bubble.user {
           background: var(--primary);
@@ -375,12 +375,12 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
-          border-top: 1px solid rgba(255,255,255,0.1);
-          background: rgba(212, 175, 55, 0.05);
+          border-top: 1px solid var(--divider);
+          background: var(--panel-bg);
         }
         .quick-action-btn {
-          background: rgba(212, 175, 55, 0.1);
-          border: 1px solid rgba(212, 175, 55, 0.3);
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid var(--glass-border);
           color: var(--primary-text);
           padding: 8px 14px;
           border-radius: 20px;
@@ -391,7 +391,8 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         }
         .quick-action-btn:hover:not(:disabled),
         .quick-action-btn:focus-visible {
-          background: rgba(212, 175, 55, 0.2);
+          background: var(--primary);
+          color: #0F0F1B;
           border-color: var(--primary);
           outline: 2px solid var(--primary);
           outline-offset: 2px;
@@ -404,13 +405,13 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
           padding: 20px;
           display: flex;
           gap: 10px;
-          border-top: 1px solid rgba(255,255,255,0.1);
-          background: rgba(0,0,0,0.2);
+          border-top: 1px solid var(--divider);
+          background: rgba(0,0,0,0.3);
         }
         .chat-footer input {
           flex: 1;
           background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.1);
+          border: 1px solid var(--glass-border);
           padding: 14px 18px;
           border-radius: 14px;
           color: white;

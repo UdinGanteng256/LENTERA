@@ -220,8 +220,8 @@ export function getFallbackVideos(): YouTubeVideo[] {
     },
     {
       id: 'E_mw-OfdY0E', // Video from YouTube
-      title: 'Kajian Ramadhan - CCNN Playlist',
-      channelTitle: 'CCNN',
+      title: 'Kajian Ramadhan - CNN Playlist',
+      channelTitle: 'CNN',
       thumbnail: 'https://img.youtube.com/vi/E_mw-OfdY0E/maxresdefault.jpg',
       publishedAt: new Date().toISOString(),
       isLive: false,

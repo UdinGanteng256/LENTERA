@@ -106,7 +106,7 @@ const KiblatView = () => {
           height: 100%;
           border-radius: 50%;
           position: relative;
-          border: 2px solid rgba(212, 175, 55, 0.3);
+          border: 2px solid var(--glass-border);
           transition: transform 0.2s ease-out;
         }
         .cardinal-point {
@@ -148,7 +148,7 @@ const KiblatView = () => {
           background: white;
           border-radius: 50%;
           z-index: 10;
-          box-shadow: 0 0 10px rgba(0,0,0,0.5);
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
       `}</style>
     </div>

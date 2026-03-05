@@ -182,12 +182,12 @@ export default function QuranCeramahTabs() {
 
         .tab-btn:hover {
           color: var(--primary);
-          background: rgba(212, 175, 55, 0.05);
+          background: var(--panel-bg);
         }
 
         .tab-btn.active {
           color: var(--primary);
-          background: rgba(212, 175, 55, 0.1);
+          background: var(--panel-bg);
           border-bottom: 2px solid var(--primary);
         }
 
@@ -199,8 +199,8 @@ export default function QuranCeramahTabs() {
         .search-input {
           width: 100%;
           max-width: 500px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid var(--divider);
+          background: var(--panel-bg);
+          border: 1px solid var(--glass-border);
           padding: 14px 20px;
           border-radius: 12px;
           color: var(--primary-text);
@@ -255,13 +255,13 @@ export default function QuranCeramahTabs() {
         .surah-card:hover {
           transform: translateY(-5px);
           border-color: var(--primary);
-          box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .surah-num {
           width: 48px;
           height: 48px;
-          background: rgba(212, 175, 55, 0.1);
+          background: var(--panel-bg);
           color: var(--primary);
           display: flex;
           align-items: center;
@@ -270,6 +270,7 @@ export default function QuranCeramahTabs() {
           font-weight: 800;
           font-size: 16px;
           flex-shrink: 0;
+          border: 1px solid var(--glass-border);
         }
 
         .surah-info {
@@ -317,13 +318,13 @@ export default function QuranCeramahTabs() {
         .video-card:hover {
           transform: translateY(-5px);
           border-color: var(--primary);
-          box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .video-thumbnail {
           width: 100%;
           aspect-ratio: 16 / 9;
-          background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05));
+          background: var(--panel-bg);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -339,7 +340,7 @@ export default function QuranCeramahTabs() {
           align-items: center;
           justify-content: center;
           font-size: 20px;
-          color: var(--on-primary);
+          color: #0F0F1B;
           transition: transform 0.3s ease;
         }
 
@@ -370,12 +371,13 @@ export default function QuranCeramahTabs() {
 
         .duration {
           display: inline-block;
-          background: rgba(212, 175, 55, 0.1);
+          background: var(--panel-bg);
           color: var(--primary);
           padding: 4px 10px;
           border-radius: 6px;
           font-size: 11px;
           font-weight: 600;
+          border: 1px solid var(--glass-border);
         }
 
         /* Kultum Player */
@@ -388,7 +390,7 @@ export default function QuranCeramahTabs() {
         .back-btn {
           align-self: flex-start;
           padding: 10px 20px;
-          background: rgba(212, 175, 55, 0.1);
+          background: var(--panel-bg);
           color: var(--primary);
           border: 1px solid var(--primary);
           border-radius: 8px;
@@ -399,7 +401,8 @@ export default function QuranCeramahTabs() {
         }
 
         .back-btn:hover {
-          background: rgba(212, 175, 55, 0.2);
+          background: var(--primary);
+          color: #0F0F1B;
         }
 
         .kultum-video-player {
@@ -408,6 +411,7 @@ export default function QuranCeramahTabs() {
           background: #000;
           border-radius: 16px;
           overflow: hidden;
+          border: 1px solid var(--glass-border);
         }
       `}</style>
     </div>

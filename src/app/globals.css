@@ -27,6 +27,12 @@ body {
   --divider: rgba(255,255,255,0.1);
   --space-md: 16px;
   --radius-xl: 32px;
+  
+  /* Glass Variables */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-blur: 12px;
+  --panel-bg: rgba(15, 15, 27, 0.4);
 }
 
 body {
@@ -40,38 +46,54 @@ body {
 body.theme-dawn {
   --background: linear-gradient(135deg, #020617 0%, #450a0a 50%, #78350f 100%);
   --primary: #FF8C42;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --panel-bg: rgba(20, 10, 5, 0.4);
 }
 body.theme-day {
   --background: linear-gradient(180deg, #021526 0%, #032030 100%);
   --primary: #D4AF37;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --panel-bg: rgba(2, 21, 38, 0.4);
 }
 body.theme-afternoon {
   --background: linear-gradient(180deg, #022c22 0%, #021526 100%);
   --primary: #D4AF37;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --panel-bg: rgba(2, 44, 34, 0.4);
 }
 body.theme-sunset {
-  --background: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+  --background: linear-gradient(to top, #450a0a 0%, #78350f 100%); /* Less bright than before */
   --primary: #F4D03F;
+  --glass-bg: rgba(0, 0, 0, 0.15); /* Darker glass for bright sunset */
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --panel-bg: rgba(30, 10, 5, 0.6);
+  --primary-text: #FFF8E1;
 }
 body.theme-maghrib {
   --background: linear-gradient(to top, #30cfd0 0%, #330867 100%);
   --primary: #D4AF37;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --panel-bg: rgba(48, 207, 208, 0.1);
 }
 body.theme-night {
   --background: linear-gradient(to bottom, #0F0F1B 0%, #1A1A2E 100%);
   --primary: #D4AF37;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --panel-bg: rgba(15, 15, 27, 0.6);
 }
 body.theme-midnight {
   --background: linear-gradient(to bottom, #020205 0%, #05050A 100%);
   --primary: #D4AF37;
+  --glass-bg: rgba(255, 255, 255, 0.02);
+  --panel-bg: rgba(2, 2, 5, 0.8);
 }
 
 h1, h2, h3, .font-primary { font-family: 'Plus Jakarta Sans', sans-serif; }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
 }
 
@@ -89,7 +111,7 @@ h1, h2, h3, .font-primary { font-family: 'Plus Jakarta Sans', sans-serif; }
 .btn-primary:focus-visible {
   outline: 3px solid var(--primary-text);
   outline-offset: 3px;
-  box-shadow: 0 0 0 4px rgba(244, 208, 63, 0.4);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
 }
 
 .animate-fade {

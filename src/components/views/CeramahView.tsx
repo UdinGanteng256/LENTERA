@@ -7,7 +7,7 @@ import { getFallbackVideos, YouTubeVideo } from '@/lib/youtube';
 const FEATURED_VIDEO_IDS = [
   'vKDsPLCvWwo', // New Live stream
   'bNY8a2BB5Gc', // Live stream from YouTube Live
-  'E_mw-OfdY0E', // Video from YouTube - CCNN Playlist
+  'E_mw-OfdY0E', // Video from YouTube - CNN Playlist
   'akGJra0vGhI', // Additional live stream
   'ZfNs8A3fMcc', // Makkah Live - Ka'bah
 ];
@@ -124,8 +124,9 @@ const CeramahView = () => {
       // Use fallback immediately for faster initial render
       if (!apiKey) {
         if (isMounted) {
-          // Use requestIdleCallback for non-critical updates
-          idleCallbackId = requestIdleCallback(() => {
+          // Use requestIdleCallback for non-critical updates (with fallback for Safari)
+          const scheduleIdleTask = window.requestIdleCallback || ((cb: IdleRequestCallback) => setTimeout(cb, 1));
+          idleCallbackId = scheduleIdleTask(() => {
             setVideos(fallbackVideos);
             const live = fallbackVideos.filter(v => v.isLive);
             setLiveVideos(live);
@@ -158,8 +159,9 @@ const CeramahView = () => {
         const live = filteredVideos.filter((v: YouTubeVideo) => v.isLive);
         const regular = filteredVideos.filter((v: YouTubeVideo) => !v.isLive);
 
-        // Use requestIdleCallback for non-critical state updates
-        idleCallbackId = requestIdleCallback(() => {
+        // Use requestIdleCallback for non-critical state updates (with fallback for Safari)
+        const scheduleIdleTask = window.requestIdleCallback || ((cb: IdleRequestCallback) => setTimeout(cb, 1));
+        idleCallbackId = scheduleIdleTask(() => {
           if (isMounted) {
             setVideos(regular);
             setLiveVideos(live);
@@ -177,7 +179,8 @@ const CeramahView = () => {
         console.error('Error fetching YouTube videos:', err);
         if (isMounted) {
           setError('Gagal memuat video. Menggunakan data fallback.');
-          idleCallbackId = requestIdleCallback(() => {
+          const scheduleIdleTask = window.requestIdleCallback || ((cb: IdleRequestCallback) => setTimeout(cb, 1));
+          idleCallbackId = scheduleIdleTask(() => {
             setVideos(fallbackVideos);
             setLiveVideos(fallbackVideos.filter(v => v.isLive));
             setSelectedId(fallbackVideos[0]?.id || '');
@@ -192,7 +195,8 @@ const CeramahView = () => {
     return () => {
       isMounted = false;
       if (idleCallbackId !== null) {
-        cancelIdleCallback(idleCallbackId);
+        const cancelIdleTask = window.cancelIdleCallback || ((id: number) => clearTimeout(id));
+        cancelIdleTask(idleCallbackId);
       }
     };
   }, [fetchVideosByIds]);
@@ -281,7 +285,7 @@ const CeramahView = () => {
             onClick={() => handleTabChange('all')}
             style={{
               padding: '8px 16px',
-              background: activeTab === 'all' ? 'var(--primary)' : 'rgba(255,255,255,0.1)',
+              background: activeTab === 'all' ? 'var(--primary)' : 'var(--panel-bg)',
               color: activeTab === 'all' ? '#0F0F1B' : 'white',
               border: 'none',
               borderRadius: '8px',
@@ -298,7 +302,7 @@ const CeramahView = () => {
             onClick={() => handleTabChange('live')}
             style={{
               padding: '8px 16px',
-              background: activeTab === 'live' ? 'var(--primary)' : 'rgba(255,255,255,0.1)',
+              background: activeTab === 'live' ? 'var(--primary)' : 'var(--panel-bg)',
               color: activeTab === 'live' ? '#0F0F1B' : 'white',
               border: 'none',
               borderRadius: '8px',
@@ -377,23 +381,23 @@ const CeramahView = () => {
 
         .channel-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-          gap: 20px;
-        }
-        .channel-card { padding: 10px; cursor: pointer; transition: 0.3s; }
-        .channel-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .channel-card.active { border-color: var(--primary); background: rgba(212, 175, 55, 0.1); }
+          .media-info { padding: 25px 35px; margin-bottom: 40px; border-color: var(--glass-border); background: var(--panel-bg); }
+          ...
+          .channel-card { padding: 10px; cursor: pointer; transition: 0.3s; border: 1px solid var(--glass-border); }
+          .channel-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+          .channel-card.active { border-color: var(--primary); background: var(--panel-bg); }
 
-        .thumb-container { position: relative; border-radius: 10px; overflow: hidden; height: 140px; background: rgba(255,255,255,0.05); }
-        .image-placeholder {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
+          .thumb-container { position: relative; border-radius: 10px; overflow: hidden; height: 140px; background: var(--panel-bg); }
+          .image-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+          }
         }
         @keyframes shimmer {
           0% { background-position: 200% 0; }
@@ -426,7 +430,7 @@ const CeramahView = () => {
         .skeleton-thumbnail {
           height: 140px;
           border-radius: 10px;
-          background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+          background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
           background-size: 200% 100%;
           animation: shimmer 1.5s infinite;
         }
@@ -434,7 +438,7 @@ const CeramahView = () => {
         .skeleton-title {
           height: 16px;
           border-radius: 4px;
-          background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+          background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
           background-size: 200% 100%;
           animation: shimmer 1.5s infinite;
           margin-bottom: 8px;
@@ -443,7 +447,7 @@ const CeramahView = () => {
           height: 12px;
           width: 60%;
           border-radius: 4px;
-          background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+          background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
           background-size: 200% 100%;
           animation: shimmer 1.5s infinite;
         }
