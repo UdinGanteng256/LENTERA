@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 interface QuranReaderProps {
   surah: { nomor: number; namaLatin: string; nama: string };
@@ -9,14 +9,14 @@ interface QuranReaderProps {
 }
 
 const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
-  const { language, t } = useLanguage();
+  const { language, t } = useTranslation();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState<number | null>(null);
   const [isFullSurahPlaying, setIsFullSurahPlaying] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [enTranslation, setEnTranslation] = useState<any>(null);
+  const [translation, setTranslation] = useState<any>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -47,24 +47,25 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
           signal: abortControllerRef.current?.signal,
         });
         const resData = await res.json();
-        
+
         if (isMountedRef.current) {
           setData(resData.data);
         }
 
-        // Fetch English data if needed
-        if (language === 'en') {
-          const enRes = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${surah.nomor}?language=en&words=false&translations=131&page=1&per_page=300`, {
-            signal: abortControllerRef.current?.signal,
-          });
-          const enData = await enRes.json();
-          if (isMountedRef.current) {
-            setEnTranslation(enData.verses);
-          }
+        // Fetch translation based on language
+        const translationId = language === 'id' ? 33 : 131; // 33 = Kemenag ID, 131 = Sahih International EN
+        const enRes = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${surah.nomor}?language=${language}&words=false&translations=${translationId}&page=1&per_page=300`, {
+          signal: abortControllerRef.current?.signal,
+        });
+        const enData = await enRes.json();
+        console.log('Translation response:', enData); // Debug log
+        if (isMountedRef.current && enData.verses) {
+          setTranslation(enData.verses);
         }
-      } catch (err: any) {
-        if (err.name !== 'AbortError') {
-          console.error('Fetch error:', err);
+      } catch (err: unknown) {
+        const error = err as Error;
+        if (error.name !== 'AbortError') {
+          console.error('Fetch error:', error);
         }
       } finally {
         if (isMountedRef.current) {
@@ -216,9 +217,9 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
                   <p className="arabic-text">{v.teksArab}</p>
                   <p className="latin-text">{v.teksLatin}</p>
                   <p className="translation-text">
-                    {language === 'id' 
-                      ? v.teksIndonesia 
-                      : (enTranslation?.[index]?.translations?.[0]?.text?.replace(/<[^>]*>?/gm, '') || 'Loading translation...')
+                    {language === 'id'
+                      ? v.teksIndonesia
+                      : (translation?.[index]?.translations?.[0]?.text || translation?.[index]?.text || 'Loading translation...').replace(/<[^>]*>?/gm, '')
                     }
                   </p>
                 </div>

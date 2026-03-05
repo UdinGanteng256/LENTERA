@@ -5,11 +5,19 @@ import { getFallbackVideos, YouTubeVideo } from '@/lib/youtube';
 
 // Specific video IDs from the provided URLs
 const FEATURED_VIDEO_IDS = [
-  'vKDsPLCvWwo', // New Live stream
-  'bNY8a2BB5Gc', // Live stream from YouTube Live
-  'E_mw-OfdY0E', // Video from YouTube - CNN Playlist
-  'akGJra0vGhI', // Additional live stream
-  'ZfNs8A3fMcc', // Makkah Live - Ka'bah
+  // Live Makkah - Ka'bah Live Stream
+  'ZfNs8A3fMcc',
+  
+  // Al Jazeera Live - News
+  'gCNeDWCI0vo',
+  
+  // Ust. Adi Hidayat - Murottal
+  'xkPPPcYnRO4', // Live Makkah
+  'm97SDRxy8GM', // Murottal
+  'TiRobhG3vKc', // Kajian
+  
+  // Ust. Khalid Basalamah
+  'VAFHmxuhUhs', // Kajian
 ];
 
 // Skeleton Loader Component

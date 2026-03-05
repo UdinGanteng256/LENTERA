@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const QuickActions = ({ onTabChange }: any) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   
   const actions = [
     {
@@ -58,6 +58,7 @@ const QuickActions = ({ onTabChange }: any) => {
           }}
           tabIndex={0}
           role="option"
+          aria-selected="false"
           aria-label={`${action.title}: ${action.subtitle}`}
           style={{ cursor: 'pointer' }}
         >

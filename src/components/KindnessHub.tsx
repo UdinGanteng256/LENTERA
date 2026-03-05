@@ -25,6 +25,8 @@ const KindnessHub: React.FC<KindnessHubProps> = ({ onDonate, onDonationSuccess }
     { id: 2, title: 'Iftar Berjamaah', amount: 35000, icon: '🍚', linkId: 'iftar-berjamaah' },
     { id: 4, title: 'Traktir Mie Ayam', amount: 76000, icon: '🍜', linkId: 'mie-ayam' },
     { id: 3, title: 'Mushaf Al-Quran', amount: 100000, icon: '📖', linkId: 'mushaf-quran' },
+    { id: 5, title: 'Beasiswa Santri', amount: 200000, icon: '🎓', linkId: 'beasiswa-santri' },
+    { id: 6, title: 'Wakaf Al-Quran', amount: 350000, icon: '🕌', linkId: 'wakaf-quran' },
   ], []);
 
   // Listen for global payment events

@@ -29,6 +29,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
     if (messages.length === 1 && messages[0].role === 'assistant') {
       setMessages([{ role: 'assistant', content: t('ai.initial_greeting') }]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language, t]);
 
   // Suggested prompts for quick engagement
@@ -129,7 +130,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
     try {
       const response = await chatWithLenteraAI(messages.concat(userMessage), undefined, language);
       setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
-    } catch (err) {
+    } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: t('common.error') }]);
     } finally {
       setIsLoading(false);

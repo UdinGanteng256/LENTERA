@@ -213,6 +213,7 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const saved = localStorage.getItem('lentera_language') as Language;
     if (saved && (saved === 'id' || saved === 'en')) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLanguageState(saved);
       document.documentElement.lang = saved;
     }
@@ -225,7 +226,7 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
   };
 
   const t = (key: string): string => {
-    return (translations[language] as any)[key] || key;
+    return translations[language][key as keyof typeof translations[typeof language]] || key;
   };
 
   return (

@@ -18,9 +18,7 @@ import PrayerReminder from '@/components/PrayerReminder';
 import ShinyText from '@/components/ShinyText';
 import CircularText from '@/components/CircularText';
 import ClickSpark from '@/components/ClickSpark';
-import LanguageToggle from '@/components/LanguageToggle';
 import { useLocation } from '@/hooks/useLocation';
-import { useLanguage } from '@/hooks/useLanguage';
 
 import { useAuth } from '@/components/Providers';
 import { db } from '@/lib/firebase';
@@ -46,7 +44,7 @@ const ViewSkeleton = () => (
 );
 
 export default function DashboardPage() {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const { user: firebaseUser, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('beranda');
   const [isChatOpen, setIsChatOpen] = useState(false);

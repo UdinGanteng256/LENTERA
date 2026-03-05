@@ -182,92 +182,60 @@ export async function getVideosByIds(
  */
 export function getFallbackVideos(): YouTubeVideo[] {
   return [
+    // Live Makkah - Ka'bah
     {
-      id: 'vKDsPLCvWwo', // New Live stream
-      title: 'Live Streaming Kajian Islam Terbaru',
-      channelTitle: 'Live Kajian',
-      thumbnail: 'https://img.youtube.com/vi/vKDsPLCvWwo/maxresdefault.jpg',
-      publishedAt: new Date().toISOString(),
-      isLive: true,
-      category: 'LIVE 🔴'
-    },
-    {
-      id: 'ZfNs8A3fMcc', // Makkah Live - Ka'bah
-      title: '🕋 Makkah Live - Ka&apos;bah (Live Streaming)',
+      id: 'ZfNs8A3fMcc',
+      title: '🕋 Makkah Live - Ka\'bah (Live Streaming)',
       channelTitle: 'Makkah Live',
       thumbnail: 'https://img.youtube.com/vi/ZfNs8A3fMcc/maxresdefault.jpg',
       publishedAt: new Date().toISOString(),
       isLive: true,
       category: 'LIVE 🔴'
     },
+    // Al Jazeera Live - News
     {
-      id: 'bNY8a2BB5Gc', // Live stream from YouTube Live
-      title: 'Live Streaming Kajian Islam',
-      channelTitle: 'Live Kajian',
-      thumbnail: 'https://img.youtube.com/vi/bNY8a2BB5Gc/maxresdefault.jpg',
+      id: 'gCNeDWCI0vo',
+      title: '📰 Al Jazeera Live - Breaking News',
+      channelTitle: 'Al Jazeera English',
+      thumbnail: 'https://img.youtube.com/vi/gCNeDWCI0vo/maxresdefault.jpg',
       publishedAt: new Date().toISOString(),
       isLive: true,
       category: 'LIVE 🔴'
     },
+    // Ust. Adi Hidayat - Murottal
     {
-      id: 'akGJra0vGhI', // The live stream video you provided
-      title: 'Live Streaming Kajian Islam',
-      channelTitle: 'Live Kajian',
-      thumbnail: 'https://img.youtube.com/vi/akGJra0vGhI/maxresdefault.jpg',
+      id: 'xkPPPcYnRO4',
+      title: '📖 Murottal Al-Quran - Ust. Adi Hidayat',
+      channelTitle: 'Adi Hidayat Official',
+      thumbnail: 'https://img.youtube.com/vi/xkPPPcYnRO4/maxresdefault.jpg',
       publishedAt: new Date().toISOString(),
-      isLive: true,
-      category: 'LIVE 🔴'
+      isLive: false,
+      category: 'MUROTTAL'
     },
     {
-      id: 'E_mw-OfdY0E', // Video from YouTube
-      title: 'Kajian Ramadhan - CNN Playlist',
-      channelTitle: 'CNN',
-      thumbnail: 'https://img.youtube.com/vi/E_mw-OfdY0E/maxresdefault.jpg',
+      id: 'm97SDRxy8GM',
+      title: '📖 Murottal Merdu - Ust. Adi Hidayat',
+      channelTitle: 'Adi Hidayat Official',
+      thumbnail: 'https://img.youtube.com/vi/m97SDRxy8GM/maxresdefault.jpg',
+      publishedAt: new Date().toISOString(),
+      isLive: false,
+      category: 'MUROTTAL'
+    },
+    {
+      id: 'TiRobhG3vKc',
+      title: '🎤 Kajian Islam - Ust. Adi Hidayat',
+      channelTitle: 'Adi Hidayat Official',
+      thumbnail: 'https://img.youtube.com/vi/TiRobhG3vKc/maxresdefault.jpg',
       publishedAt: new Date().toISOString(),
       isLive: false,
       category: 'CERAMAH'
     },
+    // Ust. Khalid Basalamah
     {
-      id: 'pYv_id8X8nM',
-      title: 'Persiapan Ruhani Ramadhan - Ustadz Hanan Attaki',
-      channelTitle: 'Hanan Attaki',
-      thumbnail: 'https://img.youtube.com/vi/pYv_id8X8nM/maxresdefault.jpg',
-      publishedAt: new Date().toISOString(),
-      isLive: false,
-      category: 'CERAMAH'
-    },
-    {
-      id: 'W6_ZIs_sk8M',
-      title: 'Fiqh Puasa Lengkap - Ustadz Abdul Somad',
-      channelTitle: 'Abdul Somad Official',
-      thumbnail: 'https://img.youtube.com/vi/W6_ZIs_sk8M/maxresdefault.jpg',
-      publishedAt: new Date().toISOString(),
-      isLive: false,
-      category: 'CERAMAH'
-    },
-    {
-      id: 'M7XMDZ99S7o',
-      title: 'Kajian Ramadhan - Hikmah Puasa',
-      channelTitle: 'Hanan Attaki',
-      thumbnail: 'https://img.youtube.com/vi/M7XMDZ99S7o/maxresdefault.jpg',
-      publishedAt: new Date().toISOString(),
-      isLive: false,
-      category: 'CERAMAH'
-    },
-    {
-      id: '7_v6_Xsh_Zw',
-      title: 'Mengetuk Pintu Langit di Bulan Ramadhan',
-      channelTitle: 'Hanan Attaki',
-      thumbnail: 'https://img.youtube.com/vi/7_v6_Xsh_Zw/maxresdefault.jpg',
-      publishedAt: new Date().toISOString(),
-      isLive: false,
-      category: 'CERAMAH'
-    },
-    {
-      id: 'abc123xyz',
-      title: 'Keutamaan Sholat Malam - Ustadz Abdul Somad',
-      channelTitle: 'Abdul Somad Official',
-      thumbnail: 'https://img.youtube.com/vi/abc123xyz/maxresdefault.jpg',
+      id: 'VAFHmxuhUhs',
+      title: '🎤 Fiqih Praktis - Ust. Khalid Basalamah',
+      channelTitle: 'Khalid Basalamah Official',
+      thumbnail: 'https://img.youtube.com/vi/VAFHmxuhUhs/maxresdefault.jpg',
       publishedAt: new Date().toISOString(),
       isLive: false,
       category: 'CERAMAH'

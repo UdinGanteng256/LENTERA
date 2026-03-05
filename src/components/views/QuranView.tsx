@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import QuranReader from './QuranReader';
 import AnimatedList from '@/components/AnimatedList';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 const QuranView = () => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [surahs, setSurahs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

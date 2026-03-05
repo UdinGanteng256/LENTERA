@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 const SettingsView = () => {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, t } = useTranslation();
   const [config, setConfig] = useState({
     themeSync: true,
     notifications: true,
@@ -39,7 +39,7 @@ const SettingsView = () => {
             <select
               className="setting-select"
               value={language}
-              onChange={(e) => setLanguage(e.target.value as any)}
+              onChange={(e) => setLanguage(e.target.value as 'id' | 'en')}
             >
               <option value="id">Bahasa Indonesia</option>
               <option value="en">English</option>

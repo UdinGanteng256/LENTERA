@@ -3,22 +3,22 @@
 import React, { useState, useEffect } from 'react';
 import { getPrayerTimes, formatPrayerTime, PRAYER_ICONS } from '@/lib/prayerTimes';
 import { useLocation } from '@/hooks/useLocation';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 const PrayerTimes = () => {
-  const [mounted, setMounted] = useState(false);
+  const { t } = useTranslation();
   const [now, setNow] = useState(new Date());
+  const [isClient, setIsClient] = useState(false);
   const { location } = useLocation();
-  const { t } = useLanguage();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
+    setIsClient(true);
     const timer = setInterval(() => setNow(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
 
-  if (!mounted) return <div className="prayer-grid-placeholder" style={{ height: '120px' }}></div>;
+  if (!isClient) return <div className="prayer-grid-placeholder" style={{ height: '120px' }}></div>;
 
   // Default to Jakarta coordinates if location not available
   const lat = location?.lat || -6.2088;
