@@ -1,36 +1,209 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LENTERA - Ramadhan Super App
+## Langkah Energi Niat Transaksi Ekonomi Ramadhan Amanah
 
-## Getting Started
+> Terangi Hati, Sempurnakan Ibadah di Bulan Suci
 
-First, run the development server:
+## 🌟 Visi
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Menjadi Ramadhan Super-App paling estetik dan fungsional yang menghubungkan spiritualitas dengan ekonomi digital (Mayar).
+
+## 🚀 Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Styling:** Vanilla CSS + CSS Modules
+- **Animations:** GSAP (PillNav), Framer Motion (Donation Cup & Interactions)
+- **AI:** Groq SDK (Llama 3.3 70B)
+- **Payment:** Mayar.id
+- **Prayer Times:** Adhan library
+
+## 📁 Struktur Folder
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── chat/          # Lentera AI endpoints
+│   │   └── webhooks/mayar/ # Payment webhook handler
+│   ├── dashboard/         # Main dashboard page
+│   ├── globals.css        # Global styles & themes
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Landing page
+├── components/
+│   ├── views/             # Page components (Quran, Kiblat, etc.)
+│   ├── AIChat.tsx         # AI chat interface
+│   ├── DonationCup.tsx    # Donation visualization
+│   ├── KindnessHub.tsx    # Mayar integration
+│   ├── PillNav.tsx        # GSAP navigation
+│   ├── PrayerReminder.tsx # Smart alerts
+│   ├── SunCycle.tsx       # Dynamic sun background
+│   └── ...
+├── hooks/
+│   ├── useDynamicTheme.ts # Theme sync with prayer times
+│   └── useLocation.ts     # High-accuracy GPS
+└── lib/
+    ├── aiPrompts.ts       # AI prompting system
+    ├── kiblat.ts          # Qibla calculation
+    ├── lenteraAI.ts       # Groq SDK integration
+    ├── mayar.ts           # Mayar payment schema
+    ├── prayerTimes.ts     # Prayer times (adhan)
+    ├── quran.ts           # Quran API fetcher
+    └── smartAlerts.ts     # Notification system
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Dynamic Themes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Theme berubah otomatis berdasarkan waktu sholat:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Theme | Waktu | Warna |
+|-------|-------|-------|
+| Dawn | Subuh - Dhuha | Purple/Pink gradient |
+| Day | Dhuha - Ashar | Deep Sea blue |
+| Sunset | Ashar - Maghrib | Orange gradient |
+| Maghrib | Maghrib - Isya | Red/Dark gradient |
+| Night | Isya - Subuh | Deep black |
 
-## Learn More
+## 🕌 Fitur Utama
 
-To learn more about Next.js, take a look at the following resources:
+### 1. Landing Page (`/`)
+- Cinematic splash screen dengan particles
+- TextPressure interactive title
+- SunCycle 24 jam background
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Dashboard (`/dashboard`)
+- **PillNav** (GSAP) - Smooth navigation
+- **CircularText** - Branding logo
+- **SunDonationPath** - Jalur sholat presisi
+- **DonationCup** - Animasi air waving untuk donasi
+- **KindnessHub** - Integrasi Mayar
+- **Quran Pro** - Audio + Teks per ayat
+- **Lentera AI** - Groq-powered assistant
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Sistem Utama
 
-## Deploy on Vercel
+#### Dynamic Theme
+```ts
+import { useDynamicTheme } from '@/hooks/useDynamicTheme';
+const { theme, currentPrayer, nextPrayer, timeToNextPrayer } = useDynamicTheme(lat, lon);
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### Amanah Pledge
+Staking dana komitmen via Mayar untuk target ibadah:
+- Khatam Al-Qur'an
+- Tahajjud 30 Hari
+- Sedekah Subuh Harian
+- Puasa Tanpa Bolong
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### Smart Alerts
+Notifikasi adzan otomatis:
+- 15 menit sebelum (Persiapan)
+- 10 menit sebelum (Pengingat)
+- 5 menit sebelum (Imminent)
+- Waktu sholat tiba
+
+## 🔧 Setup
+
+### 1. Install Dependencies
+```bash
+npm install
+```
+
+### 2. Environment Variables
+Buat file `.env.local`:
+```env
+# Groq AI (https://console.groq.com)
+GROQ_API_KEY=gsk_xxx
+
+# Mayar Payment (https://mayar.id)
+MAYAR_API_KEY=xxx
+MAYAR_WEBHOOK_SECRET=xxx
+
+# App URL (untuk webhook)
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 3. Development
+```bash
+npm run dev
+```
+
+Buka [http://localhost:3000](http://localhost:3000)
+
+## 📡 API Endpoints
+
+### POST /api/chat
+Chat dengan Lentera AI
+```json
+{
+  "messages": [
+    { "role": "user", "content": "Saya sedang sedih, beri saya ayat" }
+  ],
+  "context": {
+    "currentPrayer": "maghrib",
+    "userMood": "sedih"
+  }
+}
+```
+
+### POST /api/webhooks/mayar
+Webhook handler untuk payment Mayar
+
+## 🤝 Integrasi Mayar
+
+### Checkout Session
+```ts
+import { createCheckoutSession } from '@/lib/mayar';
+
+const session = await createCheckoutSession(userId, amount);
+```
+
+### Webhook Handler
+Otomatis update Skor Keberkahan saat donasi sukses.
+
+## 📱 Features Checklist
+
+- [x] Quran API integration
+- [x] Qibla direction (Great Circle)
+- [x] High-accuracy GPS
+- [x] Prayer times (adhan library)
+- [x] Dynamic themes
+- [x] Smart alerts (15/10/5 min)
+- [x] Lentera AI (Groq)
+- [x] Mayar webhook integration
+- [x] Amanah Pledge system
+- [ ] Google OAuth login
+- [ ] Database integration (Prisma/Drizzle)
+- [ ] Push notifications
+- [ ] Zakat calculator
+
+## 🎯 Roadmap
+
+### Phase 1 - MVP ✅
+- Landing page cinematic
+- Dashboard dengan Prayer Times
+- Quran reader dengan audio
+- Kiblat compass
+- Lentera AI basic
+
+### Phase 2 - Payment 🚧
+- Mayar checkout integration
+- Webhook handler
+- Skor Keberkahan system
+- Amanah Pledge
+
+### Phase 3 - Polish ⏳
+- Database integration
+- User authentication
+- Push notifications
+- Analytics dashboard
+
+## 📄 License
+
+Private Project - LENTERA Team 2026
+
+## 🙏 Credits
+
+- **equran.id** - Quran API
+- **adhan** - Prayer times calculation
+- **Groq** - AI inference
+- **Mayar** - Payment gateway
