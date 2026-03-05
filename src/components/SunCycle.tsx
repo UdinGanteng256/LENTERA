@@ -26,6 +26,8 @@ const SunCycle = () => {
 
     if (!isVisible) return { x: -100, y: 500, type: 'none' };
 
+    const progress = (totalMinutes - start) / (end - start);
+
     // Quadratic Bezier Formula: B(t) = (1-t)²P₀ + 2(1-t)tP₁ + t²P₂
     // P₀=(50, 400), P₁=(500, 50), P₂=(950, 400) - Matches the path's "M 50 400 Q 500 50 950 400"
     const t = progress;
@@ -68,7 +70,7 @@ const SunCycle = () => {
         {/* Simple Guide Line */}
         <path
           d="M 50 400 Q 500 50 950 400"
-          stroke="rgba(212, 175, 55, 0.05)"
+          stroke="var(--glass-border)"
           strokeWidth="1"
           fill="none"
         />
