@@ -533,9 +533,9 @@ Kami terbuka untuk kontribusi! Cara berkontribusi:
 - 🔥 [Firebase](https://firebase.google.com) - Backend
 
 ### **Team:**
-- **Developer:** [Your Name]
-- **Designer:** [Designer Name]
-- **Advisor:** [Advisor Name]
+- **Developer:** [Udinganteng256]
+- **Designer:** [Designer ]
+- **Advisor:** [Advisor ]
 
 ---
 

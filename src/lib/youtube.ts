@@ -182,12 +182,12 @@ export async function getVideosByIds(
  */
 export function getFallbackVideos(): YouTubeVideo[] {
   return [
-    // Live Makkah - Ka'bah
+    // Live Makkah - Ka'bah (NEW)
     {
-      id: 'ZfNs8A3fMcc',
+      id: 'HOjS59RP_FE',
       title: '🕋 Makkah Live - Ka\'bah (Live Streaming)',
       channelTitle: 'Makkah Live',
-      thumbnail: 'https://img.youtube.com/vi/ZfNs8A3fMcc/maxresdefault.jpg',
+      thumbnail: 'https://img.youtube.com/vi/HOjS59RP_FE/maxresdefault.jpg',
       publishedAt: new Date().toISOString(),
       isLive: true,
       category: 'LIVE 🔴'

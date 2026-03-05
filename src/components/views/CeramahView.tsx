@@ -5,8 +5,8 @@ import { getFallbackVideos, YouTubeVideo } from '@/lib/youtube';
 
 // Specific video IDs from the provided URLs
 const FEATURED_VIDEO_IDS = [
-  // Live Makkah - Ka'bah Live Stream
-  'ZfNs8A3fMcc',
+  // Live Makkah - Ka'bah Live Stream (NEW)
+  'HOjS59RP_FE',
   
   // Al Jazeera Live - News
   'gCNeDWCI0vo',
@@ -441,8 +441,23 @@ const CeramahView = () => {
           z-index: 2;
         }
         .card-info { margin-top: 12px; }
-        .card-info h4 { font-size: 13px; margin-bottom: 4px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .card-info p { font-size: 11px; color: var(--secondary-text); }
+        .card-info h4 { 
+          font-size: 14px; 
+          margin-bottom: 4px; 
+          line-height: 1.5; 
+          font-weight: 700;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          display: -webkit-box; 
+          -webkit-line-clamp: 2; 
+          -webkit-box-orient: vertical; 
+          overflow: hidden; 
+        }
+        .card-info p { 
+          font-size: 12px; 
+          color: var(--secondary-text); 
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-weight: 500;
+        }
 
         /* Skeleton Loader Styles */
         .skeleton-grid {
