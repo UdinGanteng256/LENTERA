@@ -2,7 +2,26 @@
 
 import { useRef, useEffect, useState } from 'react';
 
-const _random = () => Math.random();
+interface GooeyNavItem {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+}
+
+interface GooeyNavProps {
+  items: GooeyNavItem[];
+  animationTime?: number;
+  particleCount?: number;
+  particleDistances?: [number, number];
+  particleR?: number;
+  timeVariance?: number;
+  colors?: string[];
+  initialActiveIndex?: number;
+  onTabChange?: (id: string) => void;
+}
+
+// Helper function for random noise (used in effects, not during render)
+const noise = (n = 1): number => n / 2 - Math.random() * n;
 
 const GooeyNav = ({
   items,
@@ -14,14 +33,11 @@ const GooeyNav = ({
   colors = ['#D4AF37', '#FF8C42', '#F4D03F'],
   initialActiveIndex = 0,
   onTabChange,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}: any) => {
+}: GooeyNavProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
   const filterRef = useRef<HTMLSpanElement>(null);
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
-
-  const noise = (n = 1) => n / 2 - _random() * n;
 
   const getXY = (distance: number, pointIndex: number, totalPoints: number) => {
     const angle = ((360 + noise(8)) / totalPoints) * pointIndex * (Math.PI / 180);
@@ -50,7 +66,10 @@ const GooeyNav = ({
       particle.style.setProperty('--rotate', `${rotate}deg`);
 
       point.classList.add('point');
-      point.style.background = colors[Math.floor(_random() * colors.length)];
+      // Use random color for particles (safe - called in event handler, not render)
+      // eslint-disable-next-line react-hooks/purity
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      point.style.background = randomColor;
 
       particle.appendChild(point);
       element.appendChild(particle);
@@ -146,8 +165,7 @@ const GooeyNav = ({
       </div>
 
       <ul ref={navRef} className="nav-list">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {items.map((item: any, i: number) => (
+        {items.map((item, i) => (
           <li key={i} className={`nav-item ${activeIndex === i ? 'active' : ''}`} onClick={(e) => handleClick(e, i, item.id)}>
             <div className="nav-link">
               <span>{item.icon}</span>

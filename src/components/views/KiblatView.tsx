@@ -49,7 +49,6 @@ const KiblatView = () => {
     <div className="kiblat-container animate-fade">
       {/* Mobile Notification */}
       <div className="glass-card mobile-alert">
-        <span>📱</span>
         <p>Buka LENTERA di Smartphone Anda untuk akurasi arah Kiblat yang lebih presisi (GPS & Kompas Sensor).</p>
       </div>
 

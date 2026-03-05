@@ -3,8 +3,14 @@
 import { useEffect } from 'react';
 import { motion, useAnimation, useMotionValue } from 'framer-motion';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CircularText = ({ text = "LENTERA • RAMADHAN • KAREEM • ", spinDuration = 20, onHover = 'speedUp', className = '' }: any) => {
+interface CircularTextProps {
+  text?: string;
+  spinDuration?: number;
+  onHover?: 'speedUp' | 'slowDown' | 'none';
+  className?: string;
+}
+
+const CircularText = ({ text = "LENTERA • RAMADHAN • KAREEM • ", spinDuration = 20, onHover = 'speedUp', className = '' }: CircularTextProps) => {
   const letters = Array.from(text);
   const controls = useAnimation();
   const rotation = useMotionValue(0);
@@ -67,8 +73,8 @@ const CircularText = ({ text = "LENTERA • RAMADHAN • KAREEM • ", spinDurat
       onMouseEnter={handleHoverStart}
       onMouseLeave={handleHoverEnd}
     >
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      {letters.map((letter: any, i: number) => {
+      {/* Render letters in circular pattern */}
+      {letters.map((letter: string, i: number) => {
         const rotationDeg = (360 / letters.length) * i;
         return (
           <span

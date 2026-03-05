@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import QuranReader from './QuranReader';
 import AnimatedList from '@/components/AnimatedList';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const QuranView = () => {
+  const { t } = useLanguage();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [surahs, setSurahs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,7 +75,7 @@ const QuranView = () => {
       <div style={{ marginBottom: '30px', position: 'relative' }}>
         <input
           type="text"
-          placeholder="Cari surat (contoh: Al-Baqarah)..."
+          placeholder={t('quran.search')}
           className="search-input"
           value={search}
           onChange={handleSearch}
@@ -108,8 +110,8 @@ const QuranView = () => {
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '120px 20px', color: 'var(--secondary-text)' }}>
-          <p style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px' }}>Memuat Cahaya Al-Qur&apos;an...</p>
-          <p style={{ fontSize: '13px', opacity: 0.7 }}>Sedang mengambil data surat dari server</p>
+          <p style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px' }}>{t('quran.loading')}</p>
+          <p style={{ fontSize: '13px', opacity: 0.7 }}>{t('quran.fetching')}</p>
         </div>
       ) : (
         <AnimatedList
@@ -138,7 +140,8 @@ const QuranView = () => {
                 justifyContent: 'center',
                 borderRadius: '12px',
                 fontWeight: 800,
-                fontSize: '14px'
+                fontSize: '14px',
+                border: '1px solid var(--glass-border)'
               }}>
                 {surah.nomor}
               </div>
@@ -159,7 +162,7 @@ const QuranView = () => {
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis'
-                }}>{surah.arti} • {surah.jumlahAyat} Ayat</p>
+                }}>{surah.arti} • {surah.jumlahAyat} {t('quran.verses')}</p>
               </div>
               <div className="surah-arabic" style={{
                 fontSize: '28px',

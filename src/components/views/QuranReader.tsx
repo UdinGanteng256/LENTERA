@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface QuranReaderProps {
   surah: { nomor: number; namaLatin: string; nama: string };
@@ -8,11 +9,14 @@ interface QuranReaderProps {
 }
 
 const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
+  const { language, t } = useLanguage();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState<number | null>(null);
   const [isFullSurahPlaying, setIsFullSurahPlaying] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [enTranslation, setEnTranslation] = useState<any>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -22,13 +26,11 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
   useEffect(() => {
     isMountedRef.current = true;
 
-    // Cancel previous fetch if component re-renders quickly
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
     abortControllerRef.current = new AbortController();
 
-    // Stop any playing audio on surah change
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
@@ -37,28 +39,44 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
     setIsFullSurahPlaying(false);
     playQueueRef.current = 0;
 
-    fetch(`https://equran.id/api/v2/surat/${surah.nomor}`, {
-      signal: abortControllerRef.current.signal,
-    })
-      .then(res => res.json())
-      .then(resData => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch Indonesian data
+        const res = await fetch(`https://equran.id/api/v2/surat/${surah.nomor}`, {
+          signal: abortControllerRef.current?.signal,
+        });
+        const resData = await res.json();
+        
         if (isMountedRef.current) {
           setData(resData.data);
-          setLoading(false);
         }
-      })
-      .catch(err => {
+
+        // Fetch English data if needed
+        if (language === 'en') {
+          const enRes = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${surah.nomor}?language=en&words=false&translations=131&page=1&per_page=300`, {
+            signal: abortControllerRef.current?.signal,
+          });
+          const enData = await enRes.json();
+          if (isMountedRef.current) {
+            setEnTranslation(enData.verses);
+          }
+        }
+      } catch (err: any) {
         if (err.name !== 'AbortError') {
           console.error('Fetch error:', err);
         }
+      } finally {
         if (isMountedRef.current) {
           setLoading(false);
         }
-      });
+      }
+    };
+
+    fetchData();
 
     return () => {
       isMountedRef.current = false;
-      // Cleanup on unmount or surah change
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
@@ -69,7 +87,7 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
         audioRef.current = null;
       }
     };
-  }, [surah.nomor]);
+  }, [surah.nomor, language]);
 
   const stopAudio = useCallback(() => {
     if (audioRef.current) {
@@ -84,7 +102,6 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
   }, []);
 
   const playAudio = useCallback((id: number, url: string, onEnd?: () => void) => {
-    // Prevent overlapping audio
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.src = '';
@@ -104,7 +121,6 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
     });
 
     audio.onended = () => {
-      // Only trigger callback if this is still the current audio and component is mounted
       if (currentPlayQueue === playQueueRef.current && isMountedRef.current) {
         setPlayingId(null);
         if (onEnd) onEnd();
@@ -133,8 +149,7 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
     }
     const currentAyat = data.ayat[startIndex];
 
-    playAudio(currentAyat.nomorAyat, currentAyat.audio['05'], () => {
-      // Use requestAnimationFrame to prevent stack overflow
+    playAudio(currentAyat.nomorAyat, currentAyat.audio['01'] || currentAyat.audio['05'], () => {
       if (isMountedRef.current) {
         requestAnimationFrame(() => {
           playFullSurah(startIndex + 1);
@@ -155,30 +170,30 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
   return (
     <div className="reader-container animate-fade">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-        <button onClick={onBack} className="back-btn">← Kembali</button>
+        <button onClick={onBack} className="back-btn">← {t('quran.back')}</button>
         {!loading && (
           <button
             className={`full-play-btn ${isFullSurahPlaying ? 'playing' : ''}`}
             onClick={handleToggleFullSurah}
           >
-            {isFullSurahPlaying ? '⏹ Berhenti Murottal' : '▶ Putar Satu Surat'}
+            {isFullSurahPlaying ? t('quran.stop_full') : `▶ ${t('quran.play_full')}`}
           </button>
         )}
       </div>
 
       {loading || !data ? (
-        <div style={{ textAlign: 'center', padding: '100px' }}>Membuka Mushaf...</div>
+        <div style={{ textAlign: 'center', padding: '100px' }}>{t('quran.loading')}</div>
       ) : (
         <>
           <div className="reader-header glass-card">
             <h1 className="arabic-title">{data.nama}</h1>
             <h2>Surat {data.namaLatin}</h2>
-            <p>{data.arti} &bull; {data.tempatTurun} &bull; {data.jumlahAyat} Ayat</p>
+            <p>{language === 'id' ? data.arti : surah.namaLatin} &bull; {data.tempatTurun} &bull; {data.jumlahAyat} {t('quran.verses')}</p>
           </div>
 
           <div className="verses-list">
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {data.ayat.map((v: any) => (
+            {data.ayat.map((v: any, index: number) => (
               <div key={v.nomorAyat} className={`verse-item glass-card ${playingId === v.nomorAyat ? 'active-verse' : ''}`}>
                 <div className="verse-sidebar">
                   <div className="verse-num">{v.nomorAyat}</div>
@@ -190,7 +205,6 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
                         setIsFullSurahPlaying(false);
                       } else {
                         setIsFullSurahPlaying(false);
-                        // Using '01' as fallback if '05' is not available or preferred
                         playAudio(v.nomorAyat, v.audio['01'] || v.audio['05']);
                       }
                     }}
@@ -201,7 +215,12 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
                 <div className="verse-content">
                   <p className="arabic-text">{v.teksArab}</p>
                   <p className="latin-text">{v.teksLatin}</p>
-                  <p className="translation-text">{v.teksIndonesia}</p>
+                  <p className="translation-text">
+                    {language === 'id' 
+                      ? v.teksIndonesia 
+                      : (enTranslation?.[index]?.translations?.[0]?.text?.replace(/<[^>]*>?/gm, '') || 'Loading translation...')
+                    }
+                  </p>
                 </div>
               </div>
             ))}
@@ -219,11 +238,11 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
         .back-btn:hover, .full-play-btn:hover { border-color: var(--primary); color: var(--primary); }
         .full-play-btn.playing { background: var(--primary); color: #0F0F1B; border-color: var(--primary); }
         
-        .reader-header { text-align: center; padding: 60px; margin-bottom: 40px; border: 1px solid var(--glass-border); }
+        .reader-header { text-align: center; padding: 60px; margin-bottom: 40px; border: 1px solid var(--glass-border); background: var(--panel-bg); border-radius: 24px; }
         .arabic-title { font-size: 64px; color: var(--primary); margin-bottom: 15px; font-family: 'Amiri', serif; }
         
         .verses-list { display: flex; flex-direction: column; gap: 24px; }
-        .verse-item { display: flex; gap: 30px; padding: 40px; border: 1px solid var(--glass-border); transition: 0.3s; }
+        .verse-item { display: flex; gap: 30px; padding: 40px; border: 1px solid var(--glass-border); transition: 0.3s; border-radius: 24px; }
         .active-verse { border-color: var(--primary); background: var(--panel-bg); }
         
         .verse-sidebar { display: flex; flex-direction: column; gap: 15px; align-items: center; }

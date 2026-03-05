@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import LenisProvider from "@/components/LenisProvider";
+import { LanguageProvider } from '@/hooks/useLanguage';
 
 interface AuthContextType {
   user: User | null;
@@ -26,9 +27,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
-      <LenisProvider>
-        {children}
-      </LenisProvider>
+      <LanguageProvider>
+        <LenisProvider>
+          {children}
+        </LenisProvider>
+      </LanguageProvider>
     </AuthContext.Provider>
   );
 }

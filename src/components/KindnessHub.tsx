@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { handleMayarPayment } from '@/lib/mayarPayment';
 import GoldSpinner from '@/components/GoldSpinner';
 
@@ -15,22 +15,20 @@ interface DonationState {
 }
 
 const KindnessHub: React.FC<KindnessHubProps> = ({ onDonate, onDonationSuccess }) => {
-  const [mounted, setMounted] = useState(false);
   const [donationState, setDonationState] = useState<DonationState>({
     isLoading: false,
     packageId: null
   });
 
-  const donationOptions = [
+  const donationOptions = useMemo(() => [
     { id: 1, title: 'Paket Takjil', amount: 10000, icon: '🍲', linkId: 'paket-takjil' },
     { id: 2, title: 'Iftar Berjamaah', amount: 35000, icon: '🍚', linkId: 'iftar-berjamaah' },
     { id: 4, title: 'Traktir Mie Ayam', amount: 76000, icon: '🍜', linkId: 'mie-ayam' },
     { id: 3, title: 'Mushaf Al-Quran', amount: 100000, icon: '📖', linkId: 'mushaf-quran' },
-  ];
+  ], []);
 
   // Listen for global payment events
   useEffect(() => {
-    setMounted(true);
     const handlePaymentStart = () => {
       setDonationState(prev => ({ ...prev, isLoading: true }));
     };
@@ -59,8 +57,7 @@ const KindnessHub: React.FC<KindnessHubProps> = ({ onDonate, onDonationSuccess }
       window.removeEventListener('mayar-payment-end', handlePaymentEnd as EventListener);
       window.removeEventListener('mayar-payment-complete', handlePaymentComplete as EventListener);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [donationState.packageId, onDonationSuccess]);
+  }, [onDonationSuccess, donationOptions, donationState.packageId]);
 
   const handleDonate = async (packageId: number, linkId: string, amount: number) => {
     if (donationState.isLoading) return;
@@ -133,10 +130,7 @@ const KindnessHub: React.FC<KindnessHubProps> = ({ onDonate, onDonationSuccess }
               margin: '0 0 24px 0',
               fontFamily: "'Plus Jakarta Sans', sans-serif"
             }}>
-              {mounted ? 
-                opt.amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }) : 
-                `Rp ${opt.amount.toLocaleString('id-ID').replace(/,/g, '.')}`
-              }
+              Rp {opt.amount.toLocaleString('id-ID')}
             </p>
             <button
               onClick={() => handleDonate(opt.id, opt.linkId, opt.amount)}

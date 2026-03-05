@@ -1,9 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const DonationCup = ({ fillLevel }: { fillLevel: number }) => {
+const DonationCup = ({ fillLevel, onMilestoneReached }: { fillLevel: number; onMilestoneReached?: () => void }) => {
+  const prevFillLevelRef = React.useRef(fillLevel);
+
+  useEffect(() => {
+    // Trigger confetti when reaching milestone (e.g., 100%)
+    if (prevFillLevelRef.current < 100 && fillLevel >= 100 && onMilestoneReached) {
+      onMilestoneReached();
+    }
+    prevFillLevelRef.current = fillLevel;
+  }, [fillLevel, onMilestoneReached]);
   // Map fillLevel (0-100) to actual water height
   const baseHeight = 220;
   const targetY = baseHeight - (fillLevel / 100) * 180;

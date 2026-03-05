@@ -50,8 +50,9 @@ export function getPrayerTimes(
   const prayerTimes = new AdhanPrayerTimes(coordinates, date, params);
 
   const nextPrayer = prayerTimes.nextPrayer();
-  const timeToNextPrayer = nextPrayer
-    ? Math.floor((prayerTimes.timeForPrayer(nextPrayer)!.getTime() - Date.now()) / 1000)
+  const nextPrayerTime = nextPrayer ? prayerTimes.timeForPrayer(nextPrayer) : null;
+  const timeToNextPrayer = nextPrayer && nextPrayerTime
+    ? Math.floor((nextPrayerTime.getTime() - Date.now()) / 1000)
     : null;
 
   return {
@@ -148,5 +149,4 @@ export const PRAYER_ICONS: Record<string, string> = {
   Ashar: '⛅',
   Maghrib: '🌅',
   Isya: '🌃',
-  Tahajjud: '✨',
 };

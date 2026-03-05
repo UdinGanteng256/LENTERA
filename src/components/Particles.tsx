@@ -2,16 +2,25 @@
 
 import React, { useEffect, useRef } from 'react';
 
-class Particle {
-  x: number; y: number; size: number; speedX: number; speedY: number; opacity: number;
-  constructor(canvasWidth: number, canvasHeight: number) {
-    this.x = Math.random() * canvasWidth;
-    this.y = Math.random() * canvasHeight;
-    this.size = Math.random() * 2 + 0.1;
-    this.speedX = Math.random() * 0.5 - 0.25;
-    this.speedY = Math.random() * 0.5 - 0.25;
-    this.opacity = Math.random() * 0.5 + 0.1;
-  }
+// Particle factory function (avoiding class syntax for Turbopack compatibility)
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
+  opacity: number;
+  update: (canvasWidth: number, canvasHeight: number) => void;
+  draw: (ctx: CanvasRenderingContext2D) => void;
+}
+
+const createParticle = (canvasWidth: number, canvasHeight: number): Particle => ({
+  x: Math.random() * canvasWidth,
+  y: Math.random() * canvasHeight,
+  size: Math.random() * 2 + 0.1,
+  speedX: Math.random() * 0.5 - 0.25,
+  speedY: Math.random() * 0.5 - 0.25,
+  opacity: Math.random() * 0.5 + 0.1,
   update(canvasWidth: number, canvasHeight: number) {
     this.x += this.speedX;
     this.y += this.speedY;
@@ -19,14 +28,14 @@ class Particle {
     if (this.x < 0) this.x = canvasWidth;
     if (this.y > canvasHeight) this.y = 0;
     if (this.y < 0) this.y = canvasHeight;
-  }
+  },
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     ctx.fill();
   }
-}
+});
 
 const Particles = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -52,9 +61,9 @@ const Particles = () => {
     };
 
     const init = () => {
-      particles.length = 0; // Clear the array instead of reassigning
+      particles.length = 0;
       for (let i = 0; i < 100; i++) {
-        particles.push(new Particle(canvasWidth, canvasHeight));
+        particles.push(createParticle(canvasWidth, canvasHeight));
       }
     };
 

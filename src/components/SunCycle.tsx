@@ -3,13 +3,14 @@
 import React, { useEffect, useState } from 'react';
 
 const SunCycle = () => {
-  const [mounted, setMounted] = useState(false);
   const [now, setNow] = useState(new Date());
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsClient(true);
     // Update every hour since position is hourly based now
-    const timer = setInterval(() => setNow(new Date()), 3600000); 
+    const timer = setInterval(() => setNow(new Date()), 3600000);
     return () => clearInterval(timer);
   }, []);
 
@@ -40,7 +41,7 @@ const SunCycle = () => {
   const { x, y, type } = getSunPosition();
 
   // Render placeholder during SSR to avoid hydration mismatch
-  if (!mounted) {
+  if (!isClient) {
     return (
       <div className="sun-cycle-absolute" aria-hidden="true">
         <svg width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">

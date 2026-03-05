@@ -41,11 +41,12 @@ export interface AIResponse {
  */
 export async function chatWithLenteraAI(
   messages: ChatMessage[],
-  context?: AIContext
+  context?: AIContext,
+  language: string = 'id'
 ): Promise<AIResponse> {
   try {
     // Build enhanced system prompt with context
-    let systemPrompt = SYSTEM_PROMPT;
+    let systemPrompt = `${SYSTEM_PROMPT}\n\nIMPORTANT: Respond in ${language === 'en' ? 'English' : 'Bahasa Indonesia'}. Use a warm and spiritual tone.`;
 
     if (context) {
       const contextPrompt = generateRecommendationPrompt(context);
@@ -85,19 +86,19 @@ export async function chatWithLenteraAI(
  */
 export async function getMoodRecommendation(
   mood: string,
-  currentPrayer?: string
+  currentPrayer?: string,
+  language: string = 'id'
 ): Promise<AIResponse> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const preCuratedVerses = getVersesForMood(mood as any);
 
-  const prompt = `User sedang merasa ${mood}. ${currentPrayer ? `Saat ini waktu ${currentPrayer}.` : ''
-    }
+  const prompt = `User is feeling ${mood}. ${currentPrayer ? `Current prayer time is ${currentPrayer}.` : ''}
   
-  Berikan rekomendasi ayat yang menenangkan dengan struktur:
-  1. Sapaan hangat
-  2. 1-2 ayat rekomendasi
-  3. Penjelasan singkat
-  4. Doa singkat`;
+  Provide calming verse recommendations in ${language === 'en' ? 'English' : 'Bahasa Indonesia'} with structure:
+  1. Warm greeting
+  2. 1-2 recommended verses
+  3. Short explanation
+  4. Short prayer/dua`;
 
   try {
     const completion = await groq.chat.completions.create({
@@ -140,7 +141,8 @@ export async function getMoodRecommendation(
  * Get prayer-time specific recommendation
  */
 export async function getPrayerTimeRecommendation(
-  prayer: string
+  prayer: string,
+  language: string = 'id'
 ): Promise<AIResponse> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const preCuratedVerses = getVersesForPrayer(prayer as any);
@@ -155,9 +157,9 @@ export async function getPrayerTimeRecommendation(
     tahajjud: 'Tahajjud',
   };
 
-  const prompt = `Saat ini waktu ${prayerNames[prayer] || prayer}. 
-  Berikan keutamaan dan amalan yang bisa dikerjakan di waktu ini, 
-  beserta 1-2 ayat pendukung.`;
+  const prompt = `Current time is ${prayerNames[prayer] || prayer}. 
+  Provide the virtues and amalan (deeds) that can be done at this time in ${language === 'en' ? 'English' : 'Bahasa Indonesia'}, 
+  along with 1-2 supporting verses.`;
 
   try {
     const completion = await groq.chat.completions.create({

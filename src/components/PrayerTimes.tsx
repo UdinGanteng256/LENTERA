@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { getPrayerTimes, formatPrayerTime, PRAYER_ICONS } from '@/lib/prayerTimes';
 import { useLocation } from '@/hooks/useLocation';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const PrayerTimes = () => {
   const [mounted, setMounted] = useState(false);
   const [now, setNow] = useState(new Date());
   const { location } = useLocation();
+  const { t } = useLanguage();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -26,12 +28,12 @@ const PrayerTimes = () => {
   const { prayers, nextPrayer } = schedule;
 
   const prayerList = [
-    { id: 'fajr', name: 'Subuh', time: formatPrayerTime(prayers.fajr), icon: PRAYER_ICONS['Subuh'] },
-    { id: 'sunrise', name: 'Dhuha', time: formatPrayerTime(prayers.sunrise), icon: PRAYER_ICONS['Dhuha'] },
-    { id: 'dhuhr', name: 'Dzuhur', time: formatPrayerTime(prayers.dhuhr), icon: PRAYER_ICONS['Dzuhur'] },
-    { id: 'asr', name: 'Ashar', time: formatPrayerTime(prayers.asr), icon: PRAYER_ICONS['Ashar'] },
-    { id: 'maghrib', name: 'Maghrib', time: formatPrayerTime(prayers.maghrib), icon: PRAYER_ICONS['Maghrib'] },
-    { id: 'isha', name: 'Isya', time: formatPrayerTime(prayers.isha), icon: PRAYER_ICONS['Isya'] },
+    { id: 'fajr', name: t('prayer.fajr'), time: formatPrayerTime(prayers.fajr), icon: PRAYER_ICONS['Subuh'] },
+    { id: 'sunrise', name: t('prayer.sunrise'), time: formatPrayerTime(prayers.sunrise), icon: PRAYER_ICONS['Dhuha'] },
+    { id: 'dhuhr', name: t('prayer.dhuhr'), time: formatPrayerTime(prayers.dhuhr), icon: PRAYER_ICONS['Dzuhur'] },
+    { id: 'asr', name: t('prayer.asr'), time: formatPrayerTime(prayers.asr), icon: PRAYER_ICONS['Ashar'] },
+    { id: 'maghrib', name: t('prayer.maghrib'), time: formatPrayerTime(prayers.maghrib), icon: PRAYER_ICONS['Maghrib'] },
+    { id: 'isha', name: t('prayer.isha'), time: formatPrayerTime(prayers.isha), icon: PRAYER_ICONS['Isya'] },
   ];
 
   const nextPrayerKey = nextPrayer ? nextPrayer.toLowerCase() : '';
@@ -45,7 +47,7 @@ const PrayerTimes = () => {
             <span className="icon">{sholat.icon}</span>
             <span className="name">{sholat.name}</span>
             <span className="time">{sholat.time}</span>
-            {isNext && <div className="badge">NEXT</div>}
+            {isNext && <div className="badge">{t('prayer.next')}</div>}
           </div>
         );
       })}

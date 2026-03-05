@@ -10,12 +10,17 @@ import LenteraSky from '@/components/LenteraSky';
 import SunCycle from '@/components/SunCycle';
 import SunDonationPath from '@/components/SunDonationPath';
 import DonationCup from '@/components/DonationCup';
+import Confetti from '@/components/Confetti';
+import LanguageToggle from '@/components/LanguageToggle';
+import { useTranslation } from '@/contexts/TranslationContext';
 import PillNav from '@/components/PillNav';
 import PrayerReminder from '@/components/PrayerReminder';
 import ShinyText from '@/components/ShinyText';
 import CircularText from '@/components/CircularText';
 import ClickSpark from '@/components/ClickSpark';
+import LanguageToggle from '@/components/LanguageToggle';
 import { useLocation } from '@/hooks/useLocation';
+import { useLanguage } from '@/hooks/useLanguage';
 
 import { useAuth } from '@/components/Providers';
 import { db } from '@/lib/firebase';
@@ -41,6 +46,7 @@ const ViewSkeleton = () => (
 );
 
 export default function DashboardPage() {
+  const { t } = useLanguage();
   const { user: firebaseUser, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('beranda');
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -49,6 +55,7 @@ export default function DashboardPage() {
   const [userData, setUserData] = useState<{ name: string, photo: string } | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [viewTransitioning, setViewTransitioning] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -113,8 +120,15 @@ export default function DashboardPage() {
 
   const handleDonate = async () => {
     const newLevel = Math.min(waterLevel + 20, 100);
+    const reachedMilestone = newLevel >= 100 && waterLevel < 100;
+    
     setWaterLevel(newLevel);
     setKindnessTrigger(prev => prev + 1);
+
+    if (reachedMilestone) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 4000);
+    }
 
     if (firebaseUser) {
       try {
@@ -147,12 +161,12 @@ export default function DashboardPage() {
   }, [activeTab]);
 
   const menuItems = [
-    { id: 'beranda', label: 'Dashboard' },
-    { id: 'alquran', label: 'Al-Qur\'an' },
-    { id: 'kiblat', label: 'Kiblat' },
-    { id: 'ceramah', label: 'Ceramah' },
-    { id: 'komitmen', label: 'Komitmen' },
-    { id: 'settings', label: 'Setelan' },
+    { id: 'beranda', label: t('nav.home') },
+    { id: 'alquran', label: t('nav.quran') },
+    { id: 'kiblat', label: t('nav.qibla') },
+    { id: 'ceramah', label: t('nav.lectures') },
+    { id: 'komitmen', label: t('nav.pledge') },
+    { id: 'settings', label: t('nav.settings') },
   ];
 
   const renderContent = () => {
@@ -161,7 +175,12 @@ export default function DashboardPage() {
         return (
           <div className="animate-fade" style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(24px, 5vw, 48px)' }}>
             {/* 1. Prayer & Sun Cycle Section */}
-            <section className="glass-card" style={{ padding: 'clamp(20px, 5vw, 48px)' }}>
+            <section className="glass-card" style={{ 
+              padding: 'clamp(20px, 5vw, 48px)',
+              maxWidth: '1240px',
+              width: '100%',
+              margin: '0 auto'
+            }}>
               <SunDonationPath />
               <div style={{ marginTop: '30px' }}>
                 <PrayerTimes />
@@ -178,15 +197,15 @@ export default function DashboardPage() {
                 <QuickActions onTabChange={setActiveTab} />
               </div>
               <section className="glass-card" style={{ padding: 'clamp(20px, 5vw, 48px)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <h3 style={{ marginBottom: '20px', fontWeight: 700 }}>Gelas Kebaikan</h3>
+                <h3 style={{ marginBottom: '20px', fontWeight: 700 }}>{t('donation.title')}</h3>
                 <DonationCup fillLevel={waterLevel} />
-                <p style={{ fontSize: '13px', color: 'var(--secondary-text)', marginTop: '20px' }}>Setiap tetes sedekahmu via Mayar mengisi gelas ini.</p>
+                <p style={{ fontSize: '13px', color: 'var(--secondary-text)', marginTop: '20px' }}>{t('donation.subtitle')}</p>
               </section>
             </div>
 
             {/* 3. Donation Selection */}
             <section className="glass-card" style={{ padding: 'clamp(40px, 8vw, 80px) 20px', textAlign: 'center' }}>
-              <h2 style={{ fontSize: 'clamp(24px, 5vw, 36px)', fontWeight: 900, color: 'var(--primary)', marginBottom: '40px' }}>Nyalakan Kebaikan</h2>
+              <h2 style={{ fontSize: 'clamp(24px, 5vw, 36px)', fontWeight: 900, color: 'var(--primary)', marginBottom: '40px' }}>{t('dashboard.ignite_kindness')}</h2>
               <KindnessHub onDonate={handleDonate} />
             </section>
           </div>
@@ -256,6 +275,7 @@ export default function DashboardPage() {
         <div id="main-content" style={{ minHeight: '100vh', background: 'var(--background)', color: 'white', overflowX: 'hidden' }}>
         <AIChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
         <LenteraSky trigger={kindnessTrigger} />
+        <Confetti isActive={showConfetti} onComplete={() => setShowConfetti(false)} />
         <PrayerReminder />
 
         {/* Sync Sun Background */}
@@ -334,6 +354,7 @@ export default function DashboardPage() {
                 Login Google
               </button>
             )}
+            <LanguageToggle />
           </div>
         </header>
 
@@ -433,17 +454,20 @@ export default function DashboardPage() {
             gap: '20px'
           }}>
             <div>
-              <h2 style={{ fontSize: 'clamp(24px, 5vw, 32px)', fontWeight: 800 }}>Assalammualaikum, {userData ? userData.name.split(' ')[0] : 'Sahabat'}</h2>
-              <p style={{ color: 'var(--secondary-text)' }}>📍 {city} &bull; Menuju Berkah Ramadan</p>
+              <h2 style={{ fontSize: 'clamp(24px, 5vw, 32px)', fontWeight: 800 }}>{t('dashboard.welcome')}, {userData ? userData.name.split(' ')[0] : t('dashboard.companion')}</h2>
+              <p style={{ color: 'var(--secondary-text)' }}>📍 {city} &bull; {t('dashboard.tagline')}</p>
             </div>
-            <button
-              className="btn-primary"
-              onClick={() => setIsChatOpen(true)}
-              aria-label="Open AI chat assistant"
-              style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.2)' }}
-            >
-              <span aria-hidden="true">✦</span> Tanya AI
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <LanguageToggle />
+              <button
+                className="btn-primary"
+                onClick={() => setIsChatOpen(true)}
+                aria-label="Open AI chat assistant"
+                style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.2)' }}
+              >
+                <span aria-hidden="true">✦</span> {t('dashboard.ask_ai')}
+              </button>
+            </div>
           </header>
           
           {/* Content with transition */}

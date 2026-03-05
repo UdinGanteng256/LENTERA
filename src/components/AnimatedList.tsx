@@ -1,12 +1,18 @@
 'use client';
 
-import { useCallback, useRef, useState, memo } from 'react';
+import { useCallback, useRef, useState, memo, ReactNode } from 'react';
 import { motion, useInView } from 'framer-motion';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const AnimatedItem = memo(({ children, index, onClick, className }: any) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { amount: 0.1, once: true }); // Trigger once for performance
+interface AnimatedItemProps {
+  children: ReactNode | ((isHovered: boolean) => ReactNode);
+  index: number;
+  onClick?: () => void;
+  className?: string;
+}
+
+const AnimatedItem = memo(({ children, index, onClick, className }: AnimatedItemProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.1, once: true });
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -18,7 +24,7 @@ const AnimatedItem = memo(({ children, index, onClick, className }: any) => {
       onMouseLeave={() => setIsHovered(false)}
       initial={{ scale: 0.9, opacity: 0, y: 20 }}
       animate={inView ? { scale: 1, opacity: 1, y: 0 } : { scale: 0.9, opacity: 0, y: 20 }}
-      transition={{ duration: 0.3, delay: 0.03 * (index % 10), ease: "easeOut" }} // Optimized stagger
+      transition={{ duration: 0.3, delay: 0.03 * (index % 10), ease: "easeOut" }}
       className={`cursor-pointer ${className}`}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
@@ -30,25 +36,29 @@ const AnimatedItem = memo(({ children, index, onClick, className }: any) => {
 
 AnimatedItem.displayName = 'AnimatedItem';
 
-const AnimatedList = ({
+interface AnimatedListProps<T extends { id?: string | number }> {
+  items: T[];
+  renderItem: (item: T, isHovered: boolean) => ReactNode;
+  onItemSelect: (item: T) => void;
+  className?: string;
+  itemClassName?: string;
+}
+
+const AnimatedList = <T extends { id?: string | number },>({
   items,
   renderItem,
   onItemSelect,
   className = '',
   itemClassName = '',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}: any) => {
+}: AnimatedListProps<T>) => {
   const listRef = useRef<HTMLDivElement>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleClick = useCallback((item: any) => {
+  const handleClick = useCallback((item: T) => {
     onItemSelect(item);
   }, [onItemSelect]);
 
-  // Memoize rendered items to prevent unnecessary re-renders
   const renderedItems = useCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return items.map((item: any, index: number) => (
+    return items.map((item: T, index: number) => (
       <AnimatedItem
         key={item.id || index}
         index={index}

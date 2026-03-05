@@ -33,13 +33,20 @@ const PrayerReminder = () => {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const triggeredAlertsRef = useRef<Set<string>>(new Set());
 
-  // Request notification permission on mount
+  // Request notification permission on mount and load preferences
   useEffect(() => {
+    let isMounted = true;
+    
     requestNotificationPermission().then(granted => {
-      setPermissionGranted(granted);
+      if (isMounted) setPermissionGranted(granted);
     });
+    
+    // Load preferences outside of the promise chain
+    const prefs = getAlertPreferences();
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPreferences(getAlertPreferences());
+    if (isMounted) setPreferences(prefs);
+    
+    return () => { isMounted = false; };
   }, []);
 
   // Check for due alerts
@@ -163,7 +170,8 @@ const PrayerReminder = () => {
         </button>
       )}
 
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .reminder-container {
           position: fixed;
           top: 0;
@@ -271,7 +279,7 @@ const PrayerReminder = () => {
             opacity: 1; 
           }
         }
-      `}</style>
+      ` }} />
     </div>
   );
 };

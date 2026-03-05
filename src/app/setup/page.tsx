@@ -13,13 +13,10 @@ export default function SetupPage() {
   const { user, loading } = useAuth();
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
-  const [mounted, setMounted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
     if (!loading && !user) {
       router.push('/');
     }
@@ -27,6 +24,22 @@ export default function SetupPage() {
       setName(user.displayName);
     }
   }, [user, loading, router, name]);
+
+  // Check if user is authenticated (for SSR hydration safety)
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+          <p className="mt-4 text-secondary-text">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   const handleFinish = async () => {
     console.log("🔵 [DEBUG] handleFinish triggered");
@@ -95,13 +108,14 @@ export default function SetupPage() {
         console.log("🔵 [DEBUG] Redirecting to /dashboard");
         router.push('/dashboard');
       }, 500);
-    } catch (e: any) {
-      console.error("🔴 [ERROR] Error saving user data:", e);
+    } catch (e: unknown) {
+      const error = e as Error & { code?: string };
+      console.error("🔴 [ERROR] Error saving user data:", error);
       console.error("🔴 [ERROR] Error details:", {
-        message: e.message,
-        code: e.code,
-        name: e.name,
-        stack: e.stack
+        message: error.message,
+        code: error.code,
+        name: error.name,
+        stack: error.stack
       });
 
       // Fallback: save to localStorage only
@@ -116,14 +130,13 @@ export default function SetupPage() {
         }, 1000);
       } catch (fallbackError) {
         console.error("🔴 [ERROR] Fallback also failed:", fallbackError);
-        setError(`Gagal menyimpan data: ${e.message || 'Unknown error'}`);
+        const fallbackErr = fallbackError as Error;
+        setError(`Gagal menyimpan data: ${fallbackErr.message || 'Unknown error'}`);
       } finally {
         setIsSubmitting(false);
       }
     }
   };
-
-  if (!mounted) return null;
 
   return (
     <main style={{

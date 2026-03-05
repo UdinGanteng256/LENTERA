@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { chatWithLenteraAI, getMoodRecommendation, getPrayerTimeRecommendation, ChatMessage } from '@/lib/lenteraAI';
 import { useDynamicTheme } from '@/hooks/useDynamicTheme';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 interface AIChatProps {
   isOpen: boolean;
@@ -10,12 +11,12 @@ interface AIChatProps {
 }
 
 const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
+  const { language, t } = useTranslation();
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', content: 'Assalamualaikum! Saya Lentera AI. Ada yang bisa saya bantu untuk menemani ibadahmu hari ini?' }
+    { role: 'assistant', content: t('ai.initial_greeting') }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [quickActions, setQuickActions] = useState<Array<{ label: string; action: () => void }>>([]);
 
   const { currentPrayer } = useDynamicTheme();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -23,9 +24,65 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
+  // Update initial greeting when language changes
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].role === 'assistant') {
+      setMessages([{ role: 'assistant', content: t('ai.initial_greeting') }]);
+    }
+  }, [language, t]);
+
+  // Suggested prompts for quick engagement
+  const suggestedPrompts = language === 'id' ? [
+    { icon: '📖', text: 'Tafsir Al-Fatihah', query: 'Jelaskan tafsir surat Al-Fatihah' },
+    { icon: '🤲', text: 'Doa buka puasa', query: 'Bacaan doa berbuka puasa' },
+    { icon: '💪', text: 'Motivasi ibadah', query: 'Berikan motivasi untuk semangat ibadah' },
+    { icon: '🌙', text: 'Keutamaan malam Lailatul Qadar', query: 'Apa keutamaan malam Lailatul Qadar?' },
+  ] : [
+    { icon: '📖', text: 'Tafsir Al-Fatihah', query: 'Explain the tafsir of Surah Al-Fatihah' },
+    { icon: '🤲', text: 'Breaking fast dua', query: 'What is the dua for breaking fast?' },
+    { icon: '💪', text: 'Worship motivation', query: 'Give me motivation for worship' },
+    { icon: '🌙', text: 'Lailatul Qadar', query: 'What are the virtues of Laylat al-Qadr?' },
+  ];
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const handleQuickAction = useCallback(async (mood: string) => {
+    setInput('');
+    setIsLoading(true);
+
+    const userMessage: ChatMessage = { role: 'user', content: language === 'id' ? `Saya sedang ${mood.replace('_', ' ')}` : `I am feeling ${mood.replace('_', ' ')}` };
+    setMessages(prev => [...prev, userMessage]);
+
+    try {
+      const response = await getMoodRecommendation(mood, currentPrayer || undefined, language);
+      setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: t('common.error') }]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPrayer, language, t]);
+
+  const handlePrayerAction = useCallback(async () => {
+    if (!currentPrayer) return;
+
+    setInput('');
+    setIsLoading(true);
+
+    const userMessage: ChatMessage = { role: 'user', content: language === 'id' ? `Apa keutamaan waktu ${currentPrayer}?` : `What are the virtues of ${currentPrayer} time?` };
+    setMessages(prev => [...prev, userMessage]);
+
+    try {
+      const response = await getPrayerTimeRecommendation(currentPrayer, language);
+      setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: t('common.error') }]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPrayer, language, t]);
 
   useEffect(() => {
     scrollToBottom();
@@ -35,14 +92,6 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
     if (isOpen) {
       // Save currently focused element
       previousFocusRef.current = document.activeElement as HTMLElement;
-
-      // Set quick actions
-      setQuickActions([
-        { label: '📖 Ayat untuk kesabaran', action: () => handleQuickAction('butuh_sabar') },
-        { label: '💪 Motivasi ibadah', action: () => handleQuickAction('butuh_motivasi') },
-        { label: '😔 Sedih & cemas', action: () => handleQuickAction('cemas') },
-        { label: '🌙 Keutamaan waktu ini', action: () => handlePrayerAction() },
-      ]);
 
       // Focus on input after short delay for animation
       setTimeout(() => {
@@ -57,66 +106,31 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         }
       };
 
-      document.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
 
       return () => {
-        document.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('keydown', handleKeyDown);
         document.body.style.overflow = '';
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, onClose]);
 
-  const handleQuickAction = async (mood: string) => {
-    setInput('');
-    setIsLoading(true);
-
-    const userMessage: ChatMessage = { role: 'user', content: `Saya sedang ${mood.replace('_', ' ')}` };
-    setMessages(prev => [...prev, userMessage]);
-
-    try {
-      const response = await getMoodRecommendation(mood, currentPrayer || undefined);
-      setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
-    } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Maaf, terjadi kesalahan. Silakan coba lagi.' }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handlePrayerAction = async () => {
-    if (!currentPrayer) return;
+  const sendMessage = async (query?: string) => {
+    const text = query || input;
+    if (!text.trim() || isLoading) return;
 
     setInput('');
     setIsLoading(true);
 
-    const userMessage: ChatMessage = { role: 'user', content: `Apa keutamaan waktu ${currentPrayer}?` };
+    const userMessage: ChatMessage = { role: 'user', content: text };
     setMessages(prev => [...prev, userMessage]);
 
     try {
-      const response = await getPrayerTimeRecommendation(currentPrayer);
+      const response = await chatWithLenteraAI(messages.concat(userMessage), undefined, language);
       setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
-    } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Maaf, terjadi kesalahan.' }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
-
-    const userMessage: ChatMessage = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
-
-    try {
-      const response = await chatWithLenteraAI(messages.concat(userMessage));
-      setMessages(prev => [...prev, { role: 'assistant', content: response.text }]);
-    } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Maaf, saya mengalami gangguan. Silakan coba lagi nanti.' }]);
+    } catch (err) {
+      setMessages(prev => [...prev, { role: 'assistant', content: t('common.error') }]);
     } finally {
       setIsLoading(false);
     }
@@ -125,63 +139,29 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div
-      className="chat-overlay"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Lentera AI Chat Assistant"
-      aria-describedby="chat-description"
-    >
-      <div
-        ref={dialogRef}
-        className="chat-window glass-card"
-        onClick={e => e.stopPropagation()}
-        tabIndex={-1}
-      >
-        {/* Visually hidden description for screen readers */}
-        <div id="chat-description" style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', border: 0 }}>
-          Chat with Lentera AI assistant for spiritual guidance, Quran verses, and prayer motivation. Press Escape to close.
-        </div>
-
+    <div className="chat-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="chat-window glass-card" ref={dialogRef} role="dialog" aria-modal="true" aria-label="AI Assistant">
         <div className="chat-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div className="ai-status" aria-hidden="true"></div>
             <div>
-              <span style={{ fontWeight: 700, display: 'block' }}>AI Lentera Companion</span>
+              <span style={{ fontWeight: 700, display: 'block' }}>{t('ai.title')}</span>
               <span style={{ fontSize: '11px', color: 'var(--secondary-text)' }}>
-                {currentPrayer ? `Waktu ${currentPrayer}` : 'Online'}
+                {currentPrayer ? `${t('ai.prayer_time')} ${currentPrayer}` : 'Online'}
               </span>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="close-btn"
-            aria-label="Close chat"
-          >
-            ×
-          </button>
+          <button onClick={onClose} className="close-btn" aria-label="Close chat">×</button>
         </div>
 
-        <div
-          className="chat-body"
-          role="log"
-          aria-live="polite"
-          aria-atomic="false"
-        >
+        <div className="chat-body">
           {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`msg-wrapper ${msg.role === 'assistant' ? 'ai' : 'user'}`}
-              role="article"
-              aria-label={`Message from ${msg.role === 'assistant' ? 'AI Assistant' : 'user'}`}
-            >
-              <div className={`msg-bubble ${msg.role === 'assistant' ? 'ai' : 'user'}`}>
+            <div key={i} className={`msg-wrapper ${msg.role}`}>
+              <div className={`msg-bubble ${msg.role}`}>
                 {msg.content}
               </div>
             </div>
           ))}
-
           {isLoading && (
             <div className="msg-wrapper ai">
               <div className="msg-bubble ai">
@@ -191,30 +171,33 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           )}
-
           <div ref={messagesEndRef} />
         </div>
 
-        {quickActions.length > 0 && messages.length <= 1 && (
-          <div
-            className="quick-actions"
-            role="listbox"
-            aria-label="Quick action suggestions"
-          >
-            {quickActions.map((action, i) => (
-              <button
-                key={i}
-                className="quick-action-btn"
-                onClick={action.action}
-                disabled={isLoading}
-                role="option"
-                aria-label={action.label.replace(/[^\w\s]/gi, '').trim()}
-              >
-                {action.label}
-              </button>
-            ))}
+        {/* Suggested Prompts */}
+        {!isLoading && messages.length < 4 && (
+          <div className="suggested-container">
+            <p className="suggested-label">{t('ai.suggested')}</p>
+            <div className="suggested-list">
+              {suggestedPrompts.map((p, i) => (
+                <button key={i} className="suggested-btn" onClick={() => sendMessage(p.query)}>
+                  <span>{p.icon}</span> {p.text}
+                </button>
+              ))}
+            </div>
           </div>
         )}
+
+        <div className="quick-actions">
+          <button className="quick-action-btn" onClick={() => handleQuickAction('sedih')} disabled={isLoading}>😢 {language === 'id' ? 'Sedih' : 'Sad'}</button>
+          <button className="quick-action-btn" onClick={() => handleQuickAction('bahagia')} disabled={isLoading}>😊 {language === 'id' ? 'Bahagia' : 'Happy'}</button>
+          <button className="quick-action-btn" onClick={() => handleQuickAction('gelisah')} disabled={isLoading}>😰 {language === 'id' ? 'Gelisah' : 'Anxious'}</button>
+          {currentPrayer && (
+            <button className="quick-action-btn" onClick={handlePrayerAction} disabled={isLoading}>
+              ✨ {language === 'id' ? 'Keutamaan' : 'Virtue'} {currentPrayer}
+            </button>
+          )}
+        </div>
 
         <div className="chat-footer">
           <input
@@ -227,17 +210,13 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
                 sendMessage();
               }
             }}
-            placeholder="Tanyakan tentang Al-Qur'an, ibadah, atau curhat..."
+            placeholder={t('ai.placeholder')}
             disabled={isLoading}
             aria-label="Type your message"
             autoComplete="off"
           />
-          <button
-            onClick={sendMessage}
-            disabled={isLoading || !input.trim()}
-            aria-label={isLoading ? 'Sending message' : 'Send message'}
-          >
-            {isLoading ? '⏳' : '🚀'}
+          <button onClick={() => sendMessage()} disabled={!input.trim() || isLoading} aria-label="Send message">
+            {t('ai.send')}
           </button>
         </div>
       </div>
@@ -264,13 +243,15 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         .chat-window {
           width: 90%;
           max-width: 450px;
-          height: 80vh;
-          max-height: 650px;
+          height: 85vh;
+          max-height: 700px;
           display: flex;
           flex-direction: column;
           overflow: hidden;
           box-shadow: 0 20px 60px rgba(0,0,0,0.6);
           border: 1px solid var(--glass-border);
+          background: var(--panel-bg);
+          border-radius: 24px;
         }
         .chat-header {
           padding: 20px;
@@ -306,11 +287,8 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
           justify-content: center;
           transition: background 0.2s;
         }
-        .close-btn:hover,
-        .close-btn:focus-visible {
+        .close-btn:hover {
           background: rgba(255,255,255,0.1);
-          outline: 2px solid var(--primary);
-          outline-offset: 2px;
         }
         .chat-body {
           flex: 1;
@@ -332,16 +310,16 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         .msg-wrapper.user { justify-content: flex-end; }
         .msg-wrapper.ai { justify-content: flex-start; }
         .msg-bubble {
-          max-width: 80%;
+          max-width: 85%;
           padding: 14px 18px;
-          border-radius: 18px;
+          border-radius: 20px;
           font-size: 14px;
           line-height: 1.6;
           white-space: pre-wrap;
           word-break: break-word;
         }
         .msg-bubble.ai {
-          background: var(--panel-bg);
+          background: var(--glass-bg);
           color: var(--primary-text);
           border-bottom-left-radius: 4px;
           border: 1px solid var(--glass-border);
@@ -370,16 +348,49 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
           0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
           30% { transform: translateY(-8px); opacity: 1; }
         }
+        
+        .suggested-container {
+          padding: 0 20px 15px;
+        }
+        .suggested-label {
+          font-size: 11px;
+          color: var(--secondary-text);
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-weight: 700;
+        }
+        .suggested-list {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .suggested-btn {
+          text-align: left;
+          background: var(--glass-bg);
+          border: 1px solid var(--glass-border);
+          color: var(--primary-text);
+          padding: 10px 14px;
+          border-radius: 12px;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .suggested-btn:hover {
+          background: var(--panel-bg);
+          border-color: var(--primary);
+        }
+
         .quick-actions {
           padding: 15px 20px;
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
           border-top: 1px solid var(--divider);
-          background: var(--panel-bg);
+          background: rgba(0,0,0,0.1);
         }
         .quick-action-btn {
-          background: rgba(255, 255, 255, 0.05);
+          background: var(--glass-bg);
           border: 1px solid var(--glass-border);
           color: var(--primary-text);
           padding: 8px 14px;
@@ -389,13 +400,10 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
           transition: all 0.2s;
           white-space: nowrap;
         }
-        .quick-action-btn:hover:not(:disabled),
-        .quick-action-btn:focus-visible {
+        .quick-action-btn:hover:not(:disabled) {
           background: var(--primary);
           color: #0F0F1B;
           border-color: var(--primary);
-          outline: 2px solid var(--primary);
-          outline-offset: 2px;
         }
         .quick-action-btn:disabled {
           opacity: 0.5;
@@ -410,7 +418,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         }
         .chat-footer input {
           flex: 1;
-          background: rgba(255,255,255,0.05);
+          background: var(--glass-bg);
           border: 1px solid var(--glass-border);
           padding: 14px 18px;
           border-radius: 14px;
@@ -422,17 +430,15 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose }) => {
         .chat-footer input:focus {
           border-color: var(--primary);
         }
-        .chat-footer input:disabled {
-          opacity: 0.5;
-        }
         .chat-footer button {
           background: var(--primary);
+          color: #0F0F1B;
           border: none;
           padding: 0 20px;
           border-radius: 14px;
+          font-weight: 800;
           cursor: pointer;
-          font-size: 18px;
-          transition: transform 0.2s, opacity 0.2s;
+          transition: all 0.2s;
         }
         .chat-footer button:hover:not(:disabled) {
           transform: scale(1.05);

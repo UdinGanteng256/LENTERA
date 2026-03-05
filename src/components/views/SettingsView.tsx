@@ -1,30 +1,30 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const SettingsView = () => {
+  const { language, setLanguage, t } = useLanguage();
   const [config, setConfig] = useState({
     themeSync: true,
-    language: 'Bahasa Indonesia',
     notifications: true,
     highPrecisionGPS: true
   });
 
   const toggleSetting = (key: keyof typeof config) => {
     setConfig(prev => ({ ...prev, [key]: !prev[key] }));
-    alert(`Pengaturan ${key} telah diperbarui!`);
   };
 
   return (
     <div className="settings-container animate-fade">
       <div className="glass-card" style={{ padding: '40px' }}>
-        <h2 style={{ marginBottom: '30px', fontWeight: 800 }}>Pengaturan LENTERA</h2>
+        <h2 style={{ marginBottom: '30px', fontWeight: 800 }}>{t('settings.title')}</h2>
 
         <div className="settings-list">
           <div className="setting-item" onClick={() => toggleSetting('themeSync')}>
             <div>
-              <h4>Sinkronisasi Tema Otomatis</h4>
-              <p>Warna aplikasi berubah sesuai waktu langit di lokasi Anda.</p>
+              <h4>{t('settings.theme_sync')}</h4>
+              <p>{t('settings.theme_desc')}</p>
             </div>
             <div className={`toggle-btn ${config.themeSync ? 'active' : ''}`} />
           </div>
@@ -33,17 +33,16 @@ const SettingsView = () => {
 
           <div className="setting-item">
             <div>
-              <h4>Bahasa Konten</h4>
-              <p>Pilih bahasa untuk Al-Qur&apos;an dan Ceramah.</p>
+              <h4>{t('settings.lang_title')}</h4>
+              <p>{t('settings.lang_desc')}</p>
             </div>
             <select
               className="setting-select"
-              value={config.language}
-              onChange={(e) => setConfig({ ...config, language: e.target.value })}
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as any)}
             >
-              <option>Bahasa Indonesia</option>
-              <option>English</option>
-              <option>Arabic</option>
+              <option value="id">Bahasa Indonesia</option>
+              <option value="en">English</option>
             </select>
           </div>
 
@@ -51,8 +50,8 @@ const SettingsView = () => {
 
           <div className="setting-item" onClick={() => toggleSetting('notifications')}>
             <div>
-              <h4>Notifikasi Waktu Sholat</h4>
-              <p>Terima pengingat 15, 10, dan 5 menit sebelum adzan.</p>
+              <h4>{t('settings.notif_title')}</h4>
+              <p>{t('settings.notif_desc')}</p>
             </div>
             <div className={`toggle-btn ${config.notifications ? 'active' : ''}`} />
           </div>
@@ -61,8 +60,8 @@ const SettingsView = () => {
 
           <div className="setting-item" onClick={() => toggleSetting('highPrecisionGPS')}>
             <div>
-              <h4>Akurasi GPS Tinggi</h4>
-              <p>Gunakan sensor perangkat untuk perhitungan Kiblat yang presisi.</p>
+              <h4>{t('settings.gps_title')}</h4>
+              <p>{t('settings.gps_desc')}</p>
             </div>
             <div className={`toggle-btn ${config.highPrecisionGPS ? 'active' : ''}`} />
           </div>

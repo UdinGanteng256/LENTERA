@@ -99,7 +99,19 @@ const CeramahView = () => {
           }
         }
       );
-      return response.data.items.map((item: any) => ({
+      return response.data.items.map((item: {
+        id: string;
+        snippet: {
+          title: string;
+          channelTitle: string;
+          thumbnails: {
+            high?: { url: string };
+            medium?: { url: string };
+            default?: { url: string };
+          };
+          publishedAt: string;
+        };
+      }) => ({
         id: item.id,
         title: item.snippet.title,
         channelTitle: item.snippet.channelTitle,
@@ -323,7 +335,7 @@ const CeramahView = () => {
         <SkeletonLoader />
       ) : (
         <div className="channel-grid">
-          {displayVideos.map((v, index) => (
+          {displayVideos.map((v) => (
             <VideoCard
               key={v.id}
               video={v}

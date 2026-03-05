@@ -13,23 +13,25 @@ const LenteraSky = ({ trigger }: { trigger: number }) => {
   const [lanterns, setLanterns] = useState<Lantern[]>([]);
 
   useEffect(() => {
-    if (trigger > 0) {
-      // Add 5 new lanterns whenever trigger increases
-      const newLanterns = Array.from({ length: 5 }).map((_, i) => ({
-        id: Date.now() + i,
-        left: Math.random() * 100,
-        delay: Math.random() * 2,
-        duration: 4 + Math.random() * 4
-      }));
+    if (trigger <= 0) return;
+    
+    // Add 5 new lanterns whenever trigger increases
+    const newLanterns = Array.from({ length: 5 }).map((_, i) => ({
+      id: Date.now() + i,
+      left: Math.random() * 100,
+      delay: Math.random() * 2,
+      duration: 4 + Math.random() * 4
+    }));
 
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLanterns(prev => [...prev, ...newLanterns]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLanterns(prev => [...prev, ...newLanterns]);
 
-      // Cleanup after 10 seconds
-      setTimeout(() => {
-        setLanterns(prev => prev.filter(l => !newLanterns.find(nl => nl.id === l.id)));
-      }, 10000);
-    }
+    // Cleanup after 10 seconds
+    const cleanupTimer = setTimeout(() => {
+      setLanterns(prev => prev.filter(l => !newLanterns.find(nl => nl.id === l.id)));
+    }, 10000);
+    
+    return () => clearTimeout(cleanupTimer);
   }, [trigger]);
 
   return (

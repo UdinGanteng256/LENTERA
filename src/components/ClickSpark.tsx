@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useCallback, useMemo } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 
 interface Spark {
   x: number;
@@ -33,6 +33,7 @@ const ClickSpark = ({
   const animationIdRef = useRef<number | null>(null);
   const isAnimatingRef = useRef<boolean>(false);
   const startTimeRef = useRef<number | null>(null);
+  const drawRef = useRef<((timestamp: number) => void) | null>(null);
 
   const easeFunc = useCallback((t: number) => {
     switch (easing) {
@@ -82,7 +83,7 @@ const ClickSpark = ({
     });
 
     if (sparksRef.current.length > 0) {
-      animationIdRef.current = requestAnimationFrame(draw);
+      animationIdRef.current = requestAnimationFrame(drawRef.current!);
     } else {
       isAnimatingRef.current = false;
     }
@@ -91,29 +92,35 @@ const ClickSpark = ({
   const startAnimation = useCallback(() => {
     if (isAnimatingRef.current) return;
     isAnimatingRef.current = true;
-    startTimeRef.current = null; // will be set on first draw
-    animationIdRef.current = requestAnimationFrame(draw);
-  }, [draw]);
+    startTimeRef.current = null;
+    if (drawRef.current) {
+      animationIdRef.current = requestAnimationFrame(drawRef.current);
+    }
+  }, []);
 
   // Handle clicks
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const now = performance.now();
     const newSparks: Spark[] = Array.from({ length: sparkCount }, (_, i) => ({
       x,
       y,
       angle: (2 * Math.PI * i) / sparkCount,
-      startTime: now
+      startTime: performance.now()
     }));
 
     sparksRef.current.push(...newSparks);
     startAnimation();
-  };
+  }, [sparkCount, startAnimation]);
+
+  // Store draw function in ref after it's defined
+  useEffect(() => {
+    drawRef.current = draw;
+  }, [draw]);
 
   // Cleanup on unmount
   useEffect(() => {

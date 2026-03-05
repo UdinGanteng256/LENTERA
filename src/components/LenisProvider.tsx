@@ -4,9 +4,9 @@ import { ReactLenis } from '@studio-freight/react-lenis';
 
 export default function LenisProvider({ children }: { children: React.ReactNode }) {
     return (
-        <ReactLenis root>
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {children as any}
+        <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
+            {/* @ts-expect-error - Type conflict between react-lenis and app React versions */}
+            {children}
         </ReactLenis>
     );
 }

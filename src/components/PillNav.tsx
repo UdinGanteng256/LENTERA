@@ -83,41 +83,41 @@ const PillNav: React.FC<PillNavProps> = ({
         }
 
         tlRefs.current[i] = tl;
-        });
-        };
+      });
+    };
 
-        layout();
-        window.addEventListener('resize', layout);
+    layout();
+    window.addEventListener('resize', layout);
 
-        // Support for custom fonts
-        if (document.fonts) {
-        document.fonts.ready.then(layout).catch(() => {});
-        }
+    // Support for custom fonts
+    if (document.fonts) {
+      document.fonts.ready.then(layout).catch(() => { });
+    }
 
-        return () => window.removeEventListener('resize', layout);
-        }, [items, ease]);
+    return () => window.removeEventListener('resize', layout);
+  }, [items, ease]);
 
-        const handleEnter = (i: number) => {
-        const tl = tlRefs.current[i];
-        if (!tl) return;
-        activeTweenRefs.current[i]?.kill();
-        activeTweenRefs.current[i] = tl.tweenTo(tl.duration(), {
-        duration: 0.3, // Faster hover
-        ease,
-        overwrite: 'auto'
-        });
-        };
+  const handleEnter = (i: number) => {
+    const tl = tlRefs.current[i];
+    if (!tl) return;
+    activeTweenRefs.current[i]?.kill();
+    activeTweenRefs.current[i] = tl.tweenTo(tl.duration(), {
+      duration: 2.0, // Faster hover
+      ease,
+      overwrite: 'auto'
+    });
+  };
 
-        const handleLeave = (i: number) => {
-        const tl = tlRefs.current[i];
-        if (!tl) return;
-        activeTweenRefs.current[i]?.kill();
-        activeTweenRefs.current[i] = tl.tweenTo(0, {
-        duration: 0.2, // Faster exit
-        ease,
-        overwrite: 'auto'
-        });
-        };
+  const handleLeave = (i: number) => {
+    const tl = tlRefs.current[i];
+    if (!tl) return;
+    activeTweenRefs.current[i]?.kill();
+    activeTweenRefs.current[i] = tl.tweenTo(0, {
+      duration: 0.5, // Faster exit
+      ease,
+      overwrite: 'auto'
+    });
+  };
 
 
   return (
@@ -141,13 +141,19 @@ const PillNav: React.FC<PillNavProps> = ({
                 aria-current={isActive ? 'page' : undefined}
                 aria-label={`Navigate to ${item.label}`}
                 role="menuitem"
-                style={{
-                  '--pill-bg': pillColor,
-                  '--pill-text': pillTextColor,
-                  '--base': baseColor,
-                  '--hover-text': hoveredPillTextColor
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                } as any}
+                style={
+                  {
+                    '--pill-bg': pillColor,
+                    '--pill-text': pillTextColor,
+                    '--base': baseColor,
+                    '--hover-text': hoveredPillTextColor
+                  } as React.CSSProperties & {
+                    '--pill-bg': string;
+                    '--pill-text': string;
+                    '--base': string;
+                    '--hover-text': string;
+                  }
+                }
               >
                 {/* The Animated Filling Circle */}
                 <span
