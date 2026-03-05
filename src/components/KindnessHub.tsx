@@ -15,6 +15,7 @@ interface DonationState {
 }
 
 const KindnessHub: React.FC<KindnessHubProps> = ({ onDonate, onDonationSuccess }) => {
+  const [mounted, setMounted] = useState(false);
   const [donationState, setDonationState] = useState<DonationState>({
     isLoading: false,
     packageId: null
@@ -29,6 +30,7 @@ const KindnessHub: React.FC<KindnessHubProps> = ({ onDonate, onDonationSuccess }
 
   // Listen for global payment events
   useEffect(() => {
+    setMounted(true);
     const handlePaymentStart = () => {
       setDonationState(prev => ({ ...prev, isLoading: true }));
     };
@@ -131,7 +133,10 @@ const KindnessHub: React.FC<KindnessHubProps> = ({ onDonate, onDonationSuccess }
               margin: '0 0 24px 0',
               fontFamily: "'Plus Jakarta Sans', sans-serif"
             }}>
-              {opt.amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })}
+              {mounted ? 
+                opt.amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }) : 
+                `Rp ${opt.amount.toLocaleString('id-ID').replace(/,/g, '.')}`
+              }
             </p>
             <button
               onClick={() => handleDonate(opt.id, opt.linkId, opt.amount)}
