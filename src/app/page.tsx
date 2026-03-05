@@ -125,11 +125,7 @@ export default function LandingPage() {
         </button>
       </div>
 
-      {/* Floating Elements / Decors */}
-      <div style={{ position: 'absolute', bottom: '40px', left: '50%', transform: 'translateX(-50%)', zIndex: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', opacity: 0.5 }}>
-        <div style={{ width: '1px', height: '60px', background: 'linear-gradient(to bottom, var(--primary), transparent)' }} />
-        <span style={{ fontSize: '10px', letterSpacing: '2px' }}>SCROLL UNTUK KEBAIKAN</span>
-      </div>
+      {/* Floating Elements / Decors - Removed Scroll indicator */}
 
       <style jsx>{`
         .animate-fade {

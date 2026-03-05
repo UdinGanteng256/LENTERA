@@ -166,7 +166,7 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
         )}
       </div>
 
-      {loading ? (
+      {loading || !data ? (
         <div style={{ textAlign: 'center', padding: '100px' }}>Membuka Mushaf...</div>
       ) : (
         <>
@@ -190,7 +190,8 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
                         setIsFullSurahPlaying(false);
                       } else {
                         setIsFullSurahPlaying(false);
-                        playAudio(v.nomorAyat, v.audio['05']);
+                        // Using '01' as fallback if '05' is not available or preferred
+                        playAudio(v.nomorAyat, v.audio['01'] || v.audio['05']);
                       }
                     }}
                   >
@@ -211,33 +212,34 @@ const QuranReader: React.FC<QuranReaderProps> = ({ surah, onBack }) => {
       <style jsx>{`
         .reader-container { max-width: 900px; margin: 0 auto; padding-bottom: 100px; }
         .back-btn, .full-play-btn { 
-          background: transparent; border: 1px solid var(--divider); 
+          background: var(--panel-bg); border: 1px solid var(--glass-border); 
           color: var(--secondary-text); padding: 10px 20px; border-radius: 12px; 
           cursor: pointer; transition: 0.3s; font-weight: 600;
         }
         .back-btn:hover, .full-play-btn:hover { border-color: var(--primary); color: var(--primary); }
-        .full-play-btn.playing { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+        .full-play-btn.playing { background: var(--primary); color: #0F0F1B; border-color: var(--primary); }
         
-        .reader-header { text-align: center; padding: 60px; margin-bottom: 40px; border-color: rgba(212, 175, 55, 0.3); }
+        .reader-header { text-align: center; padding: 60px; margin-bottom: 40px; border: 1px solid var(--glass-border); }
         .arabic-title { font-size: 64px; color: var(--primary); margin-bottom: 15px; font-family: 'Amiri', serif; }
         
         .verses-list { display: flex; flex-direction: column; gap: 24px; }
-        .verse-item { display: flex; gap: 30px; padding: 40px; border-color: rgba(255,255,255,0.05); transition: 0.3s; }
-        .active-verse { border-color: var(--primary); background: rgba(212, 175, 55, 0.05); }
+        .verse-item { display: flex; gap: 30px; padding: 40px; border: 1px solid var(--glass-border); transition: 0.3s; }
+        .active-verse { border-color: var(--primary); background: var(--panel-bg); }
         
         .verse-sidebar { display: flex; flex-direction: column; gap: 15px; align-items: center; }
         .verse-num { 
-          width: 40px; height: 40px; background: rgba(212, 175, 55, 0.1); 
+          width: 40px; height: 40px; background: var(--panel-bg); 
           border-radius: 50%; display: flex; align-items: center; justify-content: center;
           font-size: 14px; font-weight: 800; color: var(--primary);
+          border: 1px solid var(--glass-border);
         }
         .audio-btn {
-          background: rgba(255,255,255,0.05); border: 1px solid var(--divider);
+          background: var(--panel-bg); border: 1px solid var(--glass-border);
           color: white; width: 40px; height: 40px; border-radius: 50%;
           cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;
         }
         .audio-btn:hover { border-color: var(--primary); transform: scale(1.1); }
-        .audio-btn.playing { background: var(--primary); border-color: var(--primary); }
+        .audio-btn.playing { background: var(--primary); border-color: var(--primary); color: #0F0F1B; }
         
         .verse-content { flex: 1; text-align: right; }
         .arabic-text { font-size: 36px; line-height: 2.2; margin-bottom: 20px; font-family: 'Amiri', serif; color: var(--primary-text); }

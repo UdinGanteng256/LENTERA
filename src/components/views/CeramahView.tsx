@@ -342,21 +342,25 @@ const CeramahView = () => {
       <style jsx>{`
         .ceramah-container { max-width: 1100px; margin: 0 auto; padding-bottom: 50px; }
         .main-player-wrapper {
-          height: 550px;
+          height: 480px;
           background: #000;
-          padding: 8px;
+          padding: 6px;
           margin-bottom: 20px;
           box-shadow: 0 20px 50px rgba(0,0,0,0.5);
           position: relative;
+          border: 1px solid var(--glass-border);
+          border-radius: 16px;
+          overflow: hidden;
         }
         .video-placeholder {
           position: absolute;
-          top: 8px;
-          left: 8px;
-          right: 8px;
-          bottom: 8px;
+          top: 6px;
+          left: 6px;
+          right: 6px;
+          bottom: 6px;
           background: #000;
-          border-radius: 16px;
+          border-radius: 12px;
+          display: flex;
           align-items: center;
           justify-content: center;
           flex-direction: column;
@@ -365,14 +369,14 @@ const CeramahView = () => {
         .loading-spinner {
           width: 40px;
           height: 40px;
-          border: 3px solid rgba(212, 175, 55, 0.3);
+          border: 3px solid var(--glass-border);
           border-top-color: var(--primary);
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .media-info { padding: 25px 35px; margin-bottom: 40px; border-color: rgba(212, 175, 55, 0.2); }
+        .media-info { padding: 20px 30px; margin-bottom: 30px; border: 1px solid var(--glass-border); background: var(--panel-bg); border-radius: 16px; }
         .pulse-dot {
           width: 12px; height: 12px; border-radius: 50%;
           box-shadow: 0 0 15px currentColor; animation: pulse 2s infinite;
@@ -381,70 +385,70 @@ const CeramahView = () => {
 
         .channel-grid {
           display: grid;
-          .media-info { padding: 25px 35px; margin-bottom: 40px; border-color: var(--glass-border); background: var(--panel-bg); }
-          ...
-          .channel-card { padding: 10px; cursor: pointer; transition: 0.3s; border: 1px solid var(--glass-border); }
-          .channel-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-          .channel-card.active { border-color: var(--primary); background: var(--panel-bg); }
+          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: 16px;
+        }
+        .channel-card { padding: 8px; cursor: pointer; transition: 0.3s; border: 1px solid var(--glass-border); border-radius: 12px; }
+        .channel-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .channel-card.active { border-color: var(--primary); background: var(--panel-bg); }
 
-          .thumb-container { position: relative; border-radius: 10px; overflow: hidden; height: 140px; background: var(--panel-bg); }
-          .image-placeholder {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-          }
+        .thumb-container { position: relative; border-radius: 8px; overflow: hidden; height: 120px; background: var(--panel-bg); }
+        .image-placeholder {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
         }
         @keyframes shimmer {
           0% { background-position: 200% 0; }
           100% { background-position: -200% 0; }
         }
         .live-badge {
-          position: absolute; top: 10px; left: 10px;
+          position: absolute; top: 8px; left: 8px;
           background: #FF4D4D; color: white;
-          padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800;
+          padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: 800;
           animation: pulse 2s infinite;
           z-index: 2;
         }
         .cat-tag {
-          position: absolute; top: 10px; right: 10px;
+          position: absolute; top: 8px; right: 8px;
           background: var(--primary); color: #0F0F1B;
-          padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800;
+          padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: 800;
           z-index: 2;
         }
-        .card-info { margin-top: 15px; }
-        .card-info h4 { font-size: 14px; margin-bottom: 5px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .card-info p { font-size: 12px; color: var(--secondary-text); }
+        .card-info { margin-top: 12px; }
+        .card-info h4 { font-size: 13px; margin-bottom: 4px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-info p { font-size: 11px; color: var(--secondary-text); }
 
         /* Skeleton Loader Styles */
         .skeleton-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-          gap: 20px;
+          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: 16px;
         }
-        .skeleton-card { padding: 10px; }
+        .skeleton-card { padding: 8px; border-radius: 12px; }
         .skeleton-thumbnail {
-          height: 140px;
-          border-radius: 10px;
+          height: 120px;
+          border-radius: 8px;
           background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
           background-size: 200% 100%;
           animation: shimmer 1.5s infinite;
         }
-        .skeleton-info { margin-top: 15px; }
+        .skeleton-info { margin-top: 12px; }
         .skeleton-title {
-          height: 16px;
+          height: 14px;
           border-radius: 4px;
           background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);
           background-size: 200% 100%;
           animation: shimmer 1.5s infinite;
-          margin-bottom: 8px;
+          margin-bottom: 6px;
         }
         .skeleton-subtitle {
-          height: 12px;
+          height: 10px;
           width: 60%;
           border-radius: 4px;
           background: linear-gradient(90deg, var(--glass-bg) 25%, var(--panel-bg) 50%, var(--glass-bg) 75%);

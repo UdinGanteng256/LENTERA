@@ -68,7 +68,7 @@ Uang Anda akan dijaga secara Amanah. Jika target "${target}" tercapai, uang akan
           <p style={{ marginTop: '20px', color: 'var(--secondary-text)' }}>
             Dana Terkunci: <strong>Rp {pledgeAmount.toLocaleString()}</strong>
           </p>
-          <button className="btn-outline" style={{ marginTop: '20px', width: '100%' }}>
+          <button className="btn-primary" style={{ marginTop: '20px', width: '100%' }}>
             Lapor Progres ke AI
           </button>
         </div>
